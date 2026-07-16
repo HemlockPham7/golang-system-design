@@ -27,6 +27,7 @@ func (g *genPassHandler) GeneratePassword(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Internal Server Err",
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"password": pass,

@@ -7,6 +7,7 @@ import (
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+//go:generate mockery --name GenPass --filename genpass.go
 type GenPass interface {
 	GeneratePassword(length int) (string, error)
 }
