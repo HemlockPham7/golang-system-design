@@ -21,6 +21,12 @@ func NewGenPass(genPassService service.GenPass) GenPass {
 	return &genPassHandler{genPassService: genPassService}
 }
 
+// GeneratePassword godoc
+// @Summary Generate a random password
+// @Tags password
+// @Produce json
+// @Success 200 {string} string
+// @Router /genpass [get]
 func (g *genPassHandler) GeneratePassword(c *gin.Context) {
 	pass, err := g.genPassService.GeneratePassword(passwordLength)
 	if err != nil {
