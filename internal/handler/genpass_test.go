@@ -64,9 +64,9 @@ func TestGenPassHandler_GeneratePassword(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			rec := httptest.NewRecorder()
-			ctx, _ := gin.CreateTestContext(rec)
-			tc.setupRequest(ctx)
+			rec := httptest.NewRecorder()        // rec will store http status, response body, and header
+			ctx, _ := gin.CreateTestContext(rec) // ctx.Writer = rec, rec is ResponseWriter, means every handler call c.JSON(...) would write the value into rec
+			tc.setupRequest(ctx)                 // ctx.Request include request from GET genpass
 
 			mockService := tc.setupMockService(ctx)
 			testHandler := NewGenPass(mockService)
