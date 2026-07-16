@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
@@ -15,11 +16,13 @@ type Engine interface {
 
 type engine struct {
 	app *gin.Engine
+	cfg *Config
 }
 
-func NewEngine() Engine {
+func NewEngine(cfg *Config) Engine {
 	app := &engine{
 		app: gin.Default(),
+		cfg: cfg,
 	}
 	app.initRoutes()
 	return app
@@ -27,7 +30,7 @@ func NewEngine() Engine {
 
 // Start starts the application
 func (e *engine) Start() error {
-	return e.app.Run(":8080")
+	return e.app.Run(fmt.Sprintf(":%s", e.cfg.AppPort))
 }
 
 // ServeHTTP to test the API endpoint

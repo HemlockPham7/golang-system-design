@@ -40,7 +40,7 @@ func TestGenPassEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			testAPI := api.NewEngine()
+			testAPI := api.NewEngine(&api.Config{})
 			recorder := tc.setupTestHTTP(testAPI)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
