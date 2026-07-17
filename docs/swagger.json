@@ -1,0 +1,31 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for managing bookmarks",
+        "title": "Bookmark Management API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/genpass": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "password"
+                ],
+                "summary": "Generate a random password",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

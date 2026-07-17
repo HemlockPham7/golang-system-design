@@ -7,6 +7,10 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/HemlockPham7/golang-system-design/docs"
 )
 
 type Engine interface {
@@ -44,4 +48,5 @@ func (e *engine) initRoutes() {
 	genPassHandler := handler.NewGenPass(genPassService)
 
 	e.app.GET("/genpass", genPassHandler.GeneratePassword)
+	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
