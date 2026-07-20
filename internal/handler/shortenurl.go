@@ -26,7 +26,7 @@ func NewShortenUrl(svc service.ShortenUrl) ShortenUrl {
 
 type shortenInputBody struct {
 	Url string `json:"url" binding:"required,url"`
-	Exp int64  `json:"exp" binding:"required,gte=50000"`
+	Exp int64  `json:"exp" binding:"required,gte=1000000000"`
 }
 
 // ShortenLink Generate shorten link
@@ -49,6 +49,7 @@ func (s *shortenUrl) ShortenLink(c *gin.Context) {
 	// goi service de create shorten url
 	code, err := s.service.CreateShortenLink(c, input.Url, time.Duration(input.Exp))
 	if err != nil {
+		log.Error().Err(err).Str("from", "handler.shortenUrl.ShortenLink").Msg("Cannot create shorten url")
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
