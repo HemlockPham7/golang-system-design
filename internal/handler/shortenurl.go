@@ -7,6 +7,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
+	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -42,7 +43,7 @@ func (s *shortenUrl) ShortenLink(c *gin.Context) {
 	// doc input
 	input := &shortenInputBody{}
 	if err := c.ShouldBindJSON(input); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, response.InputFieldError(err))
 		return
 	}
 
@@ -50,7 +51,7 @@ func (s *shortenUrl) ShortenLink(c *gin.Context) {
 	code, err := s.service.CreateShortenLink(c, input.Url, time.Duration(input.Exp))
 	if err != nil {
 		log.Error().Err(err).Str("from", "handler.shortenUrl.ShortenLink").Msg("Cannot create shorten url")
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 
@@ -68,19 +69,19 @@ func (s *shortenUrl) ShortenLink(c *gin.Context) {
 func (s *shortenUrl) Redirect(c *gin.Context) {
 	code := c.Param("code")
 	if code == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Input"})
+		c.JSON(http.StatusBadRequest, response.InputErrResponse)
 		return
 	}
 
 	url, err := s.service.GetLinkFromCode(c, code)
 	if err != nil {
 		if errors.Is(err, repository.ErrCodeNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Code not found"})
+			c.JSON(http.StatusNotFound, response.InputErrResponse)
 			return
 		}
 
 		log.Error().Err(err).Str("from", "handler.shortenUrl.Redirect").Msg("Cannot get url from code")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		c.JSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 

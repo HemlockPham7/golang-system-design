@@ -3,9 +3,13 @@ definitions:
   handler.shortenInputBody:
     properties:
       exp:
+        minimum: 1000000000
         type: integer
       url:
         type: string
+    required:
+    - exp
+    - url
     type: object
 info:
   contact: {}
