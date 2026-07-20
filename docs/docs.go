@@ -102,9 +102,14 @@ const docTemplate = `{
     "definitions": {
         "handler.shortenInputBody": {
             "type": "object",
+            "required": [
+                "exp",
+                "url"
+            ],
             "properties": {
                 "exp": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1000000000
                 },
                 "url": {
                     "type": "string"

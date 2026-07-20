@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/HemlockPham7/golang-system-design/internal/api"
+	"github.com/HemlockPham7/golang-system-design/pkg/logger"
 	redisPkg "github.com/HemlockPham7/golang-system-design/pkg/redis"
 )
 
@@ -15,6 +16,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// set log level
+	logger.SetLogLevel(cfg.LogLevel)
 
 	// create redis client
 	redisClient, err := redisPkg.NewClient("")
