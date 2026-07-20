@@ -1,4 +1,12 @@
 basePath: /
+definitions:
+  handler.shortenInputBody:
+    properties:
+      exp:
+        type: integer
+      url:
+        type: string
+    type: object
 info:
   contact: {}
   description: API for managing bookmarks
@@ -17,4 +25,45 @@ paths:
       summary: Generate a random password
       tags:
       - password
+  /v1/links/redirect/{code}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Shorten code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+      tags:
+      - link
+  /v1/links/shorten:
+    post:
+      consumes:
+      - application/json
+      description: Generate shorten url based on original url that last upto 7 days
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/handler.shortenInputBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate shorten url based on original url that last upto 7 days
+      tags:
+      - link
 swagger: "2.0"
