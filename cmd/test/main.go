@@ -1,24 +1,14 @@
 package main
 
 import (
-	"context"
-	"time"
-
-	"github.com/HemlockPham7/golang-system-design/pkg/redis"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	rclient, err := redis.NewClient("")
-	if err != nil {
-		panic(err)
-	}
-
-	rclient.Set(context.Background(), "12345", "google.com", time.Hour)
-
-	rclient2, err := redis.NewClient("CACHE")
-	if err != nil {
-		panic(err)
-	}
-
-	rclient2.Set(context.Background(), "31726", "500 days", time.Hour)
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	log.Debug().Msg("Hello World")
+	log.Info().Msg("Hello World")
+	log.Warn().Msg("Hello World")
+	log.Error().Msg("Hello World")
 }

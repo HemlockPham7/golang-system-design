@@ -8,6 +8,7 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 type ShortenUrl interface {
@@ -24,8 +25,8 @@ func NewShortenUrl(svc service.ShortenUrl) ShortenUrl {
 }
 
 type shortenInputBody struct {
-	Url string `json:"url"`
-	Exp int64  `json:"exp"`
+	Url string `json:"url" binding:"required,url"`
+	Exp int64  `json:"exp" binding:"required,gte=50000"`
 }
 
 // ShortenLink Generate shorten link
@@ -76,6 +77,8 @@ func (s *shortenUrl) Redirect(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Code not found"})
 			return
 		}
+
+		log.Error().Err(err).Str("from", "handler.shortenUrl.Redirect").Msg("Cannot get url from code")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
