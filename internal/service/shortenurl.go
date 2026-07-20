@@ -9,6 +9,7 @@ import (
 
 const codeLength = 7
 
+//go:generate mockery --name ShortenUrl --filename shortenurl.go --outpkg mocks
 type ShortenUrl interface {
 	CreateShortenLink(ctx context.Context, url string, exp time.Duration) (string, error)
 	GetLinkFromCode(ctx context.Context, code string) (string, error)
