@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/HemlockPham7/golang-system-design/internal/api"
+	redisPkg "github.com/HemlockPham7/golang-system-design/pkg/redis"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,7 +41,8 @@ func TestGenPassEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			testAPI := api.NewEngine(&api.Config{})
+			setupRedisClient := redisPkg.InitMockRedis(t)
+			testAPI := api.NewEngine(&api.Config{}, setupRedisClient)
 			recorder := tc.setupTestHTTP(testAPI)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
