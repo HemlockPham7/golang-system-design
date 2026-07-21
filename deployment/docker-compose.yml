@@ -4,21 +4,18 @@ services:
     redis:
       image: redis:alpine
       container_name: redis
-      ports:
-        - "6379:6379"
     bookmark_service:
       image: bookmark-service:dev
       build: .
       restart: always
       container_name: bookmark-service
-      ports:
-        - "8080:8080"
       depends_on:
         - redis
-      environment:
-        - REDIS_ADDR=redis:6379
-        - BASE_PATH=/api/bookmark_service
-
+      env_file:
+        - ./bookmark_service/.env
+    portal:
+      image: ebvn/bookmark-app-portal:mono
+      container_name: portal
     nginx:
       image: nginx:alpine
       container_name: nginx
