@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/HemlockPham7/golang-system-design/docs"
+	_ "github.com/HemlockPham7/golang-system-design/docs"
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
@@ -11,8 +13,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-
-	_ "github.com/HemlockPham7/golang-system-design/docs"
 )
 
 // Engine interface for starting the application
@@ -58,8 +58,17 @@ func (e *engine) initRoutes() {
 	urlService := service.NewShortenUrl(urlStorage, genPassService)
 	urlHandler := handler.NewShortenUrl(urlService)
 
+	// genpass
 	e.app.GET("/genpass", genPassHandler.GeneratePassword)
-	e.app.POST("/v1/links/shorten", urlHandler.ShortenLink)
+
+	// Init swagger routes
+	docs.SwaggerInfo.BasePath = e.cfg.BasePath
 	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	e.app.GET("/v1/links/redirect/:code", urlHandler.Redirect)
+
+	// Init v1 routes
+	v1Routes := e.app.Group("/v1")
+	{
+		v1Routes.POST("/links/shorten", urlHandler.ShortenLink)
+		v1Routes.GET("/links/redirect/:code", urlHandler.Redirect)
+	}
 }

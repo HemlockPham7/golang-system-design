@@ -7,8 +7,9 @@ services:
       ports:
         - "6379:6379"
     bookmark_service:
-      image: bookmark-service-test:latest
+      image: bookmark-service:dev
       build: .
+      restart: always
       container_name: bookmark-service
       ports:
         - "8080:8080"
@@ -17,3 +18,11 @@ services:
       environment:
         - REDIS_ADDR=redis:6379
         - BASE_PATH=/api/bookmark_service
+
+    nginx:
+      image: nginx:alpine
+      container_name: nginx
+      ports:
+        - "80:80"
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:Z

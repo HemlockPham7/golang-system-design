@@ -6,6 +6,7 @@ import "github.com/kelseyhightower/envconfig"
 type Config struct {
 	AppPort  string `default:"8080" envconfig:"APP_PORT"`
 	LogLevel string `default:"info" envconfig:"LOG_LEVEL"`
+	BasePath string `default:"/" envconfig:"BASE_PATH"`
 }
 
 // NewConfig creates a new config
