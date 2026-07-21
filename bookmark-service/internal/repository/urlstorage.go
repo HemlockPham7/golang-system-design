@@ -9,7 +9,7 @@ import (
 )
 
 type URLStorage interface {
-	StoreURL(ctx context.Context, code, url string, exp time.Duration) error
+	StoreURL(ctx context.Context, code, url string, expSecond int64) error
 	GetURL(ctx context.Context, code string) (string, error)
 }
 
@@ -21,8 +21,8 @@ func NewUrlStorage(c *redis.Client) URLStorage {
 	return &urlStorage{c: c}
 }
 
-func (s *urlStorage) StoreURL(ctx context.Context, code, url string, exp time.Duration) error {
-	return s.c.Set(ctx, code, url, exp).Err()
+func (s *urlStorage) StoreURL(ctx context.Context, code, url string, expSecond int64) error {
+	return s.c.Set(ctx, code, url, time.Duration(expSecond)*time.Second).Err()
 }
 
 var ErrCodeNotFound = errors.New("code not found")

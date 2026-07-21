@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
@@ -58,7 +57,7 @@ func TestUrlStorage_StoreURL(t *testing.T) {
 			mock := tc.setupMock(ctx, t)
 
 			storage := NewUrlStorage(mock)
-			err := storage.StoreURL(ctx, "12345", "google.com", time.Hour)
+			err := storage.StoreURL(ctx, "12345", "google.com", 300)
 			assert.Equal(t, tc.expectedErr, err)
 			if tc.verifyFunc != nil {
 				tc.verifyFunc(ctx, mock)
