@@ -7,6 +7,7 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 )
 
+//go:generate mockery --name HealthCheck --filename health_check.go --outpkg mocks
 type HealthCheck interface {
 	HealthCheck(ctx context.Context) (*model.HealthCheckResponse, error)
 }

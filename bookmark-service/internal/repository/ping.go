@@ -6,6 +6,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+//go:generate mockery --name Ping --filename ping.go --outpkg mocks
 type Ping interface {
 	CheckHealth(ctx context.Context) error
 }
