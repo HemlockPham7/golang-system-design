@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/HemlockPham7/golang-system-design/internal/service"
+	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -32,9 +33,7 @@ func (h *healthCheck) HealthCheck(c *gin.Context) {
 	msg, err := h.service.HealthCheck(c)
 	if err != nil {
 		log.Error().Err(err).Msg("Health-check error")
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Instance is not ready!",
-		})
+		c.JSON(http.StatusInternalServerError, response.InstanseErrResponse)
 		return
 	}
 	c.JSON(http.StatusOK, msg)

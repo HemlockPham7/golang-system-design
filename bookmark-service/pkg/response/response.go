@@ -20,6 +20,10 @@ var (
 		Message: "Input Error",
 		Details: nil,
 	}
+	InstanseErrResponse = Message{
+		Message: "Instance is not ready!",
+		Details: nil,
+	}
 )
 
 func InputFieldError(err error) Message {
