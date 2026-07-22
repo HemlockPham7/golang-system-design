@@ -71,7 +71,6 @@ func TestShortenUrl_ShortenLink(t *testing.T) {
 		setupRequest     func(ctx *gin.Context)
 		setupMockService func(ctx context.Context) *mocks.ShortenUrl
 
-		expectedError  error
 		expectedStatus int
 		expectedBody   string
 	}{
@@ -89,7 +88,6 @@ func TestShortenUrl_ShortenLink(t *testing.T) {
 				return serviceMock
 			},
 
-			expectedError:  nil,
 			expectedStatus: http.StatusOK,
 			expectedBody:   `{"code":"abc1234"}`,
 		},
@@ -107,7 +105,6 @@ func TestShortenUrl_ShortenLink(t *testing.T) {
 				return serviceMock
 			},
 
-			expectedError:  assert.AnError,
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody:   `{"message":"Processing Error"}`,
 		},
