@@ -58,8 +58,15 @@ func (e *engine) initRoutes() {
 	urlService := service.NewShortenUrl(urlStorage, genPassService)
 	urlHandler := handler.NewShortenUrl(urlService)
 
+	pingRepo := repository.NewPing(e.redisClient)
+	healthCheckService := service.NewHealthCheck(e.cfg.ServiceName, e.cfg.InstanceID, pingRepo)
+	healthCheckHandler := handler.NewHealthCheck(healthCheckService)
+
 	// genpass
 	e.app.GET("/genpass", genPassHandler.GeneratePassword)
+
+	// health-check
+	e.app.GET("/health-check", healthCheckHandler.HealthCheck)
 
 	// Init swagger routes
 	docs.SwaggerInfo.BasePath = e.cfg.BasePath
