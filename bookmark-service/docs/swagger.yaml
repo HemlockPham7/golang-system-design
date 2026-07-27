@@ -3,13 +3,22 @@ definitions:
   handler.shortenInputBody:
     properties:
       exp:
-        minimum: 1000000000
+        minimum: 60
         type: integer
       url:
         type: string
     required:
     - exp
     - url
+    type: object
+  model.HealthCheckResponse:
+    properties:
+      instance_id:
+        type: string
+      message:
+        type: string
+      service_name:
+        type: string
     type: object
 info:
   contact: {}
@@ -29,6 +38,21 @@ paths:
       summary: Generate a random password
       tags:
       - password
+  /health-check:
+    get:
+      consumes:
+      - application/json
+      description: ping and pong with redis server
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HealthCheckResponse'
+      summary: check redis health
+      tags:
+      - health-check
   /v1/links/redirect/{code}:
     get:
       consumes:

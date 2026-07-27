@@ -34,6 +34,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/health-check": {
+            "get": {
+                "description": "ping and pong with redis server",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health-check"
+                ],
+                "summary": "check redis health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HealthCheckResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/links/redirect/{code}": {
             "get": {
                 "consumes": [
@@ -109,9 +132,23 @@ const docTemplate = `{
             "properties": {
                 "exp": {
                     "type": "integer",
-                    "minimum": 1000000000
+                    "minimum": 60
                 },
                 "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.HealthCheckResponse": {
+            "type": "object",
+            "properties": {
+                "instance_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "service_name": {
                     "type": "string"
                 }
             }
