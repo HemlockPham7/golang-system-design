@@ -1,0 +1,39 @@
+name: ci-pipeline
+on:
+  pull_request:
+    branches: [ "main" ]
+
+  push:
+    branches:
+      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  ci_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go env
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.26'
+
+      - name: run unit test
+        working-directory: ./bookmark-service
+        run: make test
+
+      - name: login to docker
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: ./bookmark-service
+          push: true
+          tags: hemlockpham/bookmark-service:latest
