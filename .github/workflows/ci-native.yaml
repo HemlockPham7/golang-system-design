@@ -22,6 +22,7 @@ jobs:
           go-version: '1.26'
 
       - name: run unit test
+        working-directory: ./bookmark-service
         run: make test
 
       - name: login to docker
@@ -33,5 +34,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
+          context: ./bookmark-service
           push: true
           tags: hemlockpham/bookmark-service:latest
