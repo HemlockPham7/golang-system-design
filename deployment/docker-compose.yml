@@ -5,14 +5,14 @@ services:
       image: redis:alpine
       container_name: redis
 
-    bookmark_service:
+    bookmark-service:
       image: hemlockpham/bookmark-service:test
       restart: always
       container_name: bookmark-service
       depends_on:
         - redis
       env_file:
-        - ./bookmark_service/.env
+        - ./bookmark-service/.env
 
     portal:
       image: ebvn/bookmark-app-portal:mono
