@@ -16,6 +16,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Create .env file
+        run: |
+          mkdir -p ./deployment/bookmark-service
+          echo "${{ secrets.BOOKMARK_SERVICE_ENV }}" > ./deployment/bookmark-service/.env
+
       - name: login to docker
         working-directory: ./bookmark-service
         run: make docker-login
@@ -27,6 +32,12 @@ jobs:
         working-directory: ./deployment
         run: |
           echo "Deploying application..."
+          
+          mkdir -p ./bookmark-service
+          echo "$ENV_CONTENT" > ./bookmark-service/.env
+          
           docker-compose pull
           docker-compose up -d --remove-orphans
           docker system prune -f
+        env:
+          ENV_CONTENT: ${{ secrets.BOOKMARK_SERVICE_ENV }}
