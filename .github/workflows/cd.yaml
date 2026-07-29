@@ -36,8 +36,8 @@ jobs:
           mkdir -p ./bookmark-service
           echo "$ENV_CONTENT" > ./bookmark-service/.env
           
-          docker-compose pull
-          docker-compose up -d --remove-orphans
+          docker compose pull
+          docker compose up -d --remove-orphans
           docker system prune -f
         env:
           ENV_CONTENT: ${{ secrets.BOOKMARK_SERVICE_ENV }}

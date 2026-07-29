@@ -6,7 +6,7 @@ services:
       container_name: redis
 
     bookmark-service:
-      image: hemlockpham/bookmark-service:v1.0.5
+      image: hemlockpham/bookmark-service:v1.0.6
       restart: always
       container_name: bookmark-service
       depends_on:
