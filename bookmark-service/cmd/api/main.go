@@ -7,7 +7,7 @@ import (
 )
 
 // @title Bookmark Management API
-// @version 1.0.4
+// @version 1.0.5
 // @description API for managing bookmarks
 // @BasePath /
 func main() {
