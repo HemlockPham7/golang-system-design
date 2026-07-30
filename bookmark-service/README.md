@@ -54,3 +54,10 @@ bookmark-service/
 ├── go.mod
 ├── go.sum
 └── README.md
+
+
+## DBeaver connection fail
+
+- "FATAL: invalid value for parameter "TimeZone": "Asia/Saigon""
+- https://github.com/dbeaver/dbeaver/issues/36487
+- Change the setting in preference in DBeaver to Asia/Ho_Chi_Minh
