@@ -6,7 +6,7 @@ services:
       container_name: redis
     bookmark-service:
       image: bookmark-service-test:latest
-      build: .
+      build: bookmark-service
       container_name: bookmark-service
       depends_on:
         - redis

@@ -6,7 +6,7 @@ RUN mkdir -p /opt/app
 
 WORKDIR /opt/app
 
-COPY . .
+COPY bookmark-service .
 
 RUN go mod download
 
