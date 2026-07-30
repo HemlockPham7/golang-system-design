@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/HemlockPham7/golang-system-design/internal/api"
+	"github.com/HemlockPham7/golang-system-design/internal/model"
 	"github.com/HemlockPham7/golang-system-design/pkg/logger"
 	redisPkg "github.com/HemlockPham7/golang-system-design/pkg/redis"
+	"github.com/HemlockPham7/golang-system-design/pkg/sqldb"
 )
 
 // @title Bookmark Management API
@@ -26,7 +28,17 @@ func main() {
 		panic(err)
 	}
 
-	app := api.NewEngine(cfg, redisClient)
+	// Init db
+	db, err := sqldb.NewClient("")
+	if err != nil {
+		panic(err)
+	}
+	err = db.AutoMigrate(&model.User{})
+	if err != nil {
+		panic(err)
+	}
+
+	app := api.NewEngine(cfg, redisClient, db)
 	err = app.Start()
 	if err != nil {
 		panic(err)
