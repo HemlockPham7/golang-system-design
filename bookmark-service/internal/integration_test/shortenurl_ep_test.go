@@ -8,6 +8,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/api"
 	redisPkg "github.com/HemlockPham7/golang-system-design/pkg/redis"
+	"github.com/HemlockPham7/golang-system-design/pkg/sqldb"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -59,7 +60,8 @@ func TestShortenUrl_ShortenUrlEndpoint(t *testing.T) {
 			t.Parallel()
 
 			setupRedisClient := redisPkg.InitMockRedis(t)
-			testAPI := api.NewEngine(&api.Config{}, setupRedisClient)
+			setupDB := sqldb.InitMockDB(t)
+			testAPI := api.NewEngine(&api.Config{}, setupRedisClient, setupDB)
 			recorder := tc.setupTestHTTP(testAPI)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
