@@ -20,11 +20,46 @@ definitions:
       service_name:
         type: string
     type: object
+  model.User:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      username:
+        type: string
+    type: object
+  user.registerInput:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      username:
+        type: string
+    required:
+    - display_name
+    - email
+    - password
+    - username
+    type: object
+  user.userResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.User'
+      message:
+        type: string
+    type: object
 info:
   contact: {}
   description: API for managing bookmarks
   title: Bookmark Management API
-  version: 1.0.0
+  version: 1.0.7
 paths:
   /genpass:
     get:
@@ -94,4 +129,26 @@ paths:
       summary: Generate shorten url based on original url that last upto 7 days
       tags:
       - link
+  /v1/users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided information
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.registerInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.userResponse'
+      summary: Register a new user
+      tags:
+      - User
 swagger: "2.0"
