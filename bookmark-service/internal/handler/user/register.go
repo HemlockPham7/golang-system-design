@@ -1,9 +1,11 @@
 package user
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/HemlockPham7/golang-system-design/internal/model"
+	"github.com/HemlockPham7/golang-system-design/pkg/dbutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -41,9 +43,22 @@ func (h *userHandler) Register(c *gin.Context) {
 	}
 
 	createdUser, err := h.service.CreateUser(c, input.Username, input.Password, input.DisplayName, input.Email)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to create user")
+	switch {
+	case errors.Is(err, dbutils.ErrDuplicationUsername):
+		c.AbortWithStatusJSON(http.StatusConflict, response.Message{
+			Message: "Username already taken",
+		})
+		return
+	case errors.Is(err, dbutils.ErrDuplicationEmail):
+		c.AbortWithStatusJSON(http.StatusConflict, response.Message{
+			Message: "Email already taken",
+		})
+		return
+	case err == nil:
+	default:
+		log.Err(err).Msg("Failed to register user")
 		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InstanseErrResponse)
+		return
 	}
 
 	c.JSON(http.StatusCreated, &userResponse{
