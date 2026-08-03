@@ -139,6 +139,26 @@ paths:
       summary: Generate shorten url based on original url that last upto 7 days
       tags:
       - link
+  /v1/self/info:
+    get:
+      consumes:
+      - application/json
+      description: get your current information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/model.User'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: get your current information
+      tags:
+      - User
   /v1/users/login:
     post:
       consumes:
@@ -188,4 +208,9 @@ paths:
       summary: Register a new user
       tags:
       - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

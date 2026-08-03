@@ -6,6 +6,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/docs"
 	_ "github.com/HemlockPham7/golang-system-design/docs"
+	"github.com/HemlockPham7/golang-system-design/internal/api/middleware"
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
 	userHdl "github.com/HemlockPham7/golang-system-design/internal/handler/user"
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
@@ -107,6 +108,9 @@ func (e *engine) initHandlers() *handlers {
 func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
 
+	// init middleware
+	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
+
 	// genpass
 	e.app.GET("/genpass", allHandlers.genPassHandler.GeneratePassword)
 
@@ -131,5 +135,8 @@ func (e *engine) initRoutes() {
 			usersRoutes.POST("/register", allHandlers.userHandler.Register)
 			usersRoutes.POST("/login", allHandlers.userHandler.Login)
 		}
+
+		v1Routes.Use(jwtAuth.JWTAuth())
+		v1Routes.GET("/self/info", allHandlers.userHandler.GetSelfInfo)
 	}
 }

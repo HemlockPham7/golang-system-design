@@ -16,6 +16,9 @@ import (
 // @version 1.0.7
 // @description API for managing bookmarks
 // @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	// create app config
 	cfg := createAPIConfig()
@@ -37,7 +40,7 @@ func main() {
 }
 
 func createRedisClient(envPrefix string) *redis.Client {
-	redisClient, err := redisPkg.NewClient("")
+	redisClient, err := redisPkg.NewClient(envPrefix)
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +48,7 @@ func createRedisClient(envPrefix string) *redis.Client {
 }
 
 func createDB(envPrefix string) *gorm.DB {
-	db, err := sqldb.NewClient("")
+	db, err := sqldb.NewClient(envPrefix)
 	if err != nil {
 		panic(err)
 	}

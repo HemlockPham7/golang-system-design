@@ -18,7 +18,7 @@ type loginInput struct {
 // Login Authentication endpoint
 // @Summary Return a jwt token if the input is correct
 // @Description Return a jwt token if the input is correct
-// @Tags user
+// @Tags User
 // @Accept application/json
 // @Produce application/json
 // @Param input body loginInput true "Input required"
