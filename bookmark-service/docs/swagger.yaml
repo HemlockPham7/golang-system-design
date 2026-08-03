@@ -31,6 +31,16 @@ definitions:
       username:
         type: string
     type: object
+  user.loginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
   user.registerInput:
     properties:
       display_name:
@@ -48,7 +58,7 @@ definitions:
     - password
     - username
     type: object
-  user.userResponse:
+  user.registerResponse:
     properties:
       data:
         $ref: '#/definitions/model.User'
@@ -129,6 +139,33 @@ paths:
       summary: Generate shorten url based on original url that last upto 7 days
       tags:
       - link
+  /v1/users/login:
+    post:
+      consumes:
+      - application/json
+      description: Return a jwt token if the input is correct
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/user.loginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              message:
+                type: string
+              token:
+                type: string
+            type: object
+      summary: Return a jwt token if the input is correct
+      tags:
+      - user
   /v1/users/register:
     post:
       consumes:
@@ -147,7 +184,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/user.userResponse'
+            $ref: '#/definitions/user.registerResponse'
       summary: Register a new user
       tags:
       - User

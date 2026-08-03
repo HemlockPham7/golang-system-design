@@ -7,6 +7,7 @@ import (
 
 type Handler interface {
 	Register(c *gin.Context)
+	Login(c *gin.Context)
 }
 
 type userHandler struct {

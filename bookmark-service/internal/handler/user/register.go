@@ -18,7 +18,7 @@ type registerInput struct {
 	Email       string `json:"email" binding:"required"`
 }
 
-type userResponse struct {
+type registerResponse struct {
 	Data    *model.User `json:"data"`
 	Message string      `json:"message"`
 }
@@ -33,7 +33,7 @@ type userResponse struct {
 // @Accept json
 // @Produce json
 // @Param user body registerInput true "User registration details"
-// @Success 201 {object} userResponse
+// @Success 201 {object} registerResponse
 // @Router /v1/users/register [post]
 func (h *userHandler) Register(c *gin.Context) {
 	input := &registerInput{}
@@ -61,7 +61,7 @@ func (h *userHandler) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, &userResponse{
+	c.JSON(http.StatusCreated, &registerResponse{
 		Data:    createdUser,
 		Message: "User created successfully",
 	})

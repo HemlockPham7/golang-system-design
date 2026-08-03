@@ -121,6 +121,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/users/login": {
+            "post": {
+                "description": "Return a jwt token if the input is correct",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Return a jwt token if the input is correct",
+                "parameters": [
+                    {
+                        "description": "Input required",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.loginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "token": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/register": {
             "post": {
                 "description": "Register a new user with the provided information",
@@ -149,7 +191,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/user.userResponse"
+                            "$ref": "#/definitions/user.registerResponse"
                         }
                     }
                 }
@@ -204,6 +246,21 @@ const docTemplate = `{
                 }
             }
         },
+        "user.loginInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "user.registerInput": {
             "type": "object",
             "required": [
@@ -228,7 +285,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.userResponse": {
+        "user.registerResponse": {
             "type": "object",
             "properties": {
                 "data": {

@@ -44,6 +44,11 @@ docker-login:
 docker-release:
 	docker push $(IMG_NAME):$(IMG_TAG)
 
+generate-rsa-key:
+	openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
+	openssl rsa -pubout -in private.pem -out public.pem
+
+
 #test:
 #	go test ./... -coverprofile=coverage.tmp -coverpkg=./... -covermode=atomic -p 1
 #	grep -vE "$(COVERAGE_EXCLUDE)" coverage.tmp > coverage.out
