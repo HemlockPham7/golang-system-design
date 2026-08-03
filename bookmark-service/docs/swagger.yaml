@@ -185,7 +185,7 @@ paths:
             type: object
       summary: Return a jwt token if the input is correct
       tags:
-      - user
+      - User
   /v1/users/register:
     post:
       consumes:

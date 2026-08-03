@@ -6,6 +6,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/model"
 	"github.com/HemlockPham7/golang-system-design/pkg/dbutils"
+	"github.com/HemlockPham7/golang-system-design/pkg/requestutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -36,9 +37,8 @@ type registerResponse struct {
 // @Success 201 {object} registerResponse
 // @Router /v1/users/register [post]
 func (h *userHandler) Register(c *gin.Context) {
-	input := &registerInput{}
-	if err := c.ShouldBindJSON(input); err != nil {
-		c.JSON(http.StatusBadRequest, response.InputFieldError(err))
+	input, err := requestutils.BindInputFromRequest[registerInput](c)
+	if err != nil {
 		return
 	}
 

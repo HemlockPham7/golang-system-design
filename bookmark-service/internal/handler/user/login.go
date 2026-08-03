@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/HemlockPham7/golang-system-design/internal/service/user"
+	"github.com/HemlockPham7/golang-system-design/pkg/requestutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -26,9 +27,8 @@ type loginInput struct {
 // @Router /v1/users/login [post]
 func (h *userHandler) Login(c *gin.Context) {
 	// doc body input
-	input := &loginInput{}
-	if err := c.ShouldBindJSON(input); err != nil {
-		c.JSON(http.StatusBadRequest, response.InputFieldError(err))
+	input, err := requestutils.BindInputFromRequest[loginInput](c)
+	if err != nil {
 		return
 	}
 

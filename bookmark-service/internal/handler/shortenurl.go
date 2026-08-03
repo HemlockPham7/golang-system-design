@@ -6,6 +6,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
+	"github.com/HemlockPham7/golang-system-design/pkg/requestutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -40,9 +41,8 @@ type shortenInputBody struct {
 // @Router /v1/links/shorten [post]
 func (s *shortenUrl) ShortenLink(c *gin.Context) {
 	// doc input
-	input := &shortenInputBody{}
-	if err := c.ShouldBindJSON(input); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, response.InputFieldError(err))
+	input, err := requestutils.BindInputFromRequest[shortenInputBody](c)
+	if err != nil {
 		return
 	}
 
