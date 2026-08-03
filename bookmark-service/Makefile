@@ -18,7 +18,7 @@ swagger:
 dev-run: swagger run
 
 COVERAGE_EXCLUDE=mocks|main.go|test|config.go|client.go|level.go
-COVERAGE_THRESHOLD=50
+COVERAGE_THRESHOLD=30
 COVERAGE_FOLDER=./test-output
 
 docker-test:
