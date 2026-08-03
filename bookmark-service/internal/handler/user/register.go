@@ -6,6 +6,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/model"
 	"github.com/HemlockPham7/golang-system-design/pkg/dbutils"
+	"github.com/HemlockPham7/golang-system-design/pkg/requestutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -18,7 +19,7 @@ type registerInput struct {
 	Email       string `json:"email" binding:"required"`
 }
 
-type userResponse struct {
+type registerResponse struct {
 	Data    *model.User `json:"data"`
 	Message string      `json:"message"`
 }
@@ -33,12 +34,11 @@ type userResponse struct {
 // @Accept json
 // @Produce json
 // @Param user body registerInput true "User registration details"
-// @Success 201 {object} userResponse
+// @Success 201 {object} registerResponse
 // @Router /v1/users/register [post]
 func (h *userHandler) Register(c *gin.Context) {
-	input := &registerInput{}
-	if err := c.ShouldBindJSON(input); err != nil {
-		c.JSON(http.StatusBadRequest, response.InputFieldError(err))
+	input, err := requestutils.BindInputFromRequest[registerInput](c)
+	if err != nil {
 		return
 	}
 
@@ -61,8 +61,8 @@ func (h *userHandler) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, &userResponse{
+	c.JSON(http.StatusCreated, &registerResponse{
 		Data:    createdUser,
-		Message: "User created successfully",
+		Message: "Register an user successfully!",
 	})
 }

@@ -6,12 +6,14 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/docs"
 	_ "github.com/HemlockPham7/golang-system-design/docs"
+	"github.com/HemlockPham7/golang-system-design/internal/api/middleware"
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
 	userHdl "github.com/HemlockPham7/golang-system-design/internal/handler/user"
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	userRepo "github.com/HemlockPham7/golang-system-design/internal/repository/user"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	userSvc "github.com/HemlockPham7/golang-system-design/internal/service/user"
+	"github.com/HemlockPham7/golang-system-design/pkg/jwtutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -33,15 +35,28 @@ type engine struct {
 	cfg         *Config
 	redisClient *redis.Client
 	dbClient    *gorm.DB
+	jwtGen      jwtutils.JWTGenerator
+	jwtVal      jwtutils.JWTValidator
+}
+
+type EngineOpts struct {
+	App         *gin.Engine
+	Cfg         *Config
+	RedisClient *redis.Client
+	DbClient    *gorm.DB
+	JwtGen      jwtutils.JWTGenerator
+	JwtVal      jwtutils.JWTValidator
 }
 
 // NewEngine creates a new engine
-func NewEngine(cfg *Config, redisClient *redis.Client, dbClient *gorm.DB) Engine {
+func NewEngine(opts *EngineOpts) Engine {
 	app := &engine{
-		app:         gin.Default(),
-		cfg:         cfg,
-		redisClient: redisClient,
-		dbClient:    dbClient,
+		app:         opts.App,
+		cfg:         opts.Cfg,
+		redisClient: opts.RedisClient,
+		dbClient:    opts.DbClient,
+		jwtGen:      opts.JwtGen,
+		jwtVal:      opts.JwtVal,
 	}
 	app.initRoutes()
 	return app
@@ -78,7 +93,7 @@ func (e *engine) initHandlers() *handlers {
 
 	userRepository := userRepo.NewSqlRepository(e.dbClient)
 	hasher := utils.NewHasher()
-	userService := userSvc.NewService(userRepository, hasher)
+	userService := userSvc.NewService(userRepository, hasher, e.jwtGen)
 	userHandler := userHdl.NewHandler(userService)
 
 	return &handlers{
@@ -93,6 +108,9 @@ func (e *engine) initHandlers() *handlers {
 func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
 
+	// init middleware
+	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
+
 	// genpass
 	e.app.GET("/genpass", allHandlers.genPassHandler.GeneratePassword)
 
@@ -106,9 +124,19 @@ func (e *engine) initRoutes() {
 	// Init v1 routes
 	v1Routes := e.app.Group("/v1")
 	{
-		v1Routes.POST("/links/shorten", allHandlers.urlHandler.ShortenLink)
-		v1Routes.GET("/links/redirect/:code", allHandlers.urlHandler.Redirect)
+		linksRoutes := v1Routes.Group("/links")
+		{
+			linksRoutes.POST("/shorten", allHandlers.urlHandler.ShortenLink)
+			linksRoutes.GET("/redirect/:code", allHandlers.urlHandler.Redirect)
+		}
 
-		v1Routes.POST("/users/register", allHandlers.userHandler.Register)
+		usersRoutes := v1Routes.Group("/users")
+		{
+			usersRoutes.POST("/register", allHandlers.userHandler.Register)
+			usersRoutes.POST("/login", allHandlers.userHandler.Login)
+		}
+
+		v1Routes.Use(jwtAuth.JWTAuth())
+		v1Routes.GET("/self/info", allHandlers.userHandler.GetSelfInfo)
 	}
 }

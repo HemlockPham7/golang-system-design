@@ -8,6 +8,7 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/api"
 	redisPkg "github.com/HemlockPham7/golang-system-design/pkg/redis"
 	"github.com/HemlockPham7/golang-system-design/pkg/sqldb"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,7 +49,12 @@ func TestHealthCheckEndpoint(t *testing.T) {
 
 			setupRedisClient := redisPkg.InitMockRedis(t)
 			setupDB := sqldb.InitMockDB(t)
-			testAPI := api.NewEngine(&api.Config{}, setupRedisClient, setupDB)
+			testAPI := api.NewEngine(&api.EngineOpts{
+				App:         gin.Default(),
+				Cfg:         &api.Config{},
+				RedisClient: setupRedisClient,
+				DbClient:    setupDB,
+			})
 			recorder := tc.setupTestHTTP(testAPI)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
