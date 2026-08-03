@@ -265,6 +265,9 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "display_name": {
                     "type": "string"
                 },
@@ -272,6 +275,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 },
                 "username": {

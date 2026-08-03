@@ -22,11 +22,15 @@ definitions:
     type: object
   model.User:
     properties:
+      created_at:
+        type: string
       display_name:
         type: string
       email:
         type: string
       id:
+        type: string
+      updated_at:
         type: string
       username:
         type: string

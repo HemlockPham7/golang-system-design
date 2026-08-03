@@ -16,6 +16,11 @@ type loginInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type loginResponse struct {
+	Data    string `json:"data"`
+	Message string `json:"message"`
+}
+
 // Login Authentication endpoint
 // @Summary Return a jwt token if the input is correct
 // @Description Return a jwt token if the input is correct
@@ -46,5 +51,8 @@ func (h *userHandler) Login(c *gin.Context) {
 	}
 
 	// tra ve token
-	c.JSON(http.StatusOK, response.Message{Message: token})
+	c.JSON(http.StatusOK, &loginResponse{
+		Data:    token,
+		Message: "Logged in successfully!",
+	})
 }

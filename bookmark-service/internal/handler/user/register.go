@@ -63,6 +63,6 @@ func (h *userHandler) Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, &registerResponse{
 		Data:    createdUser,
-		Message: "User created successfully",
+		Message: "Register an user successfully!",
 	})
 }
