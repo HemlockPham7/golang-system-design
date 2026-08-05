@@ -8,10 +8,13 @@ import (
 	_ "github.com/HemlockPham7/golang-system-design/docs"
 	"github.com/HemlockPham7/golang-system-design/internal/api/middleware"
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
+	bookmarkHdl "github.com/HemlockPham7/golang-system-design/internal/handler/bookmark"
 	userHdl "github.com/HemlockPham7/golang-system-design/internal/handler/user"
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
+	bookmarkRepo "github.com/HemlockPham7/golang-system-design/internal/repository/bookmark"
 	userRepo "github.com/HemlockPham7/golang-system-design/internal/repository/user"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
+	bookmarkSvc "github.com/HemlockPham7/golang-system-design/internal/service/bookmark"
 	userSvc "github.com/HemlockPham7/golang-system-design/internal/service/user"
 	"github.com/HemlockPham7/golang-system-design/pkg/jwtutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/utils"
@@ -77,10 +80,11 @@ type handlers struct {
 	urlHandler         handler.ShortenUrl
 	healthCheckHandler handler.HealthCheck
 	userHandler        userHdl.Handler
+	bookmarkHandler    bookmarkHdl.Handler
 }
 
 func (e *engine) initHandlers() *handlers {
-	genPassService := service.NewGenPass()
+	genPassService := utils.NewGenPass()
 	genPassHandler := handler.NewGenPass(genPassService)
 
 	urlStorage := repository.NewUrlStorage(e.redisClient)
@@ -96,11 +100,16 @@ func (e *engine) initHandlers() *handlers {
 	userService := userSvc.NewService(userRepository, hasher, e.jwtGen)
 	userHandler := userHdl.NewHandler(userService)
 
+	bookmarkRepository := bookmarkRepo.NewRepository(e.dbClient)
+	bookmarkService := bookmarkSvc.NewService(bookmarkRepository, genPassService)
+	bookmarkHandler := bookmarkHdl.NewHandler(bookmarkService)
+
 	return &handlers{
 		genPassHandler:     genPassHandler,
 		urlHandler:         urlHandler,
 		healthCheckHandler: healthCheckHandler,
 		userHandler:        userHandler,
+		bookmarkHandler:    bookmarkHandler,
 	}
 }
 
@@ -121,22 +130,40 @@ func (e *engine) initRoutes() {
 	docs.SwaggerInfo.BasePath = e.cfg.BasePath
 	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Init v1 routes
-	v1Routes := e.app.Group("/v1")
+	privateRoutes := e.app.Group("")
+	privateRoutes.Use(jwtAuth.JWTAuth())
 	{
-		linksRoutes := v1Routes.Group("/links")
+		privateV1Routes := privateRoutes.Group("/v1")
 		{
-			linksRoutes.POST("/shorten", allHandlers.urlHandler.ShortenLink)
-			linksRoutes.GET("/redirect/:code", allHandlers.urlHandler.Redirect)
-		}
+			selfRoutes := privateV1Routes.Group("/self")
+			{
+				selfRoutes.GET("/info", allHandlers.userHandler.GetSelfInfo)
+			}
 
-		usersRoutes := v1Routes.Group("/users")
-		{
-			usersRoutes.POST("/register", allHandlers.userHandler.Register)
-			usersRoutes.POST("/login", allHandlers.userHandler.Login)
+			bookmarksRoutes := privateV1Routes.Group("/bookmarks")
+			{
+				bookmarksRoutes.POST("/", allHandlers.bookmarkHandler.CreateBookmark)
+				bookmarksRoutes.GET("/", allHandlers.bookmarkHandler.GetBookmarks)
+			}
 		}
-
-		v1Routes.Use(jwtAuth.JWTAuth())
-		v1Routes.GET("/self/info", allHandlers.userHandler.GetSelfInfo)
 	}
+
+	publicRoutes := e.app.Group("")
+	{
+		publicV1Routes := publicRoutes.Group("/v1")
+		{
+			linksRoutes := publicV1Routes.Group("/links")
+			{
+				linksRoutes.POST("/shorten", allHandlers.urlHandler.ShortenLink)
+				linksRoutes.GET("/redirect/:code", allHandlers.urlHandler.Redirect)
+			}
+
+			usersRoutes := publicV1Routes.Group("/users")
+			{
+				usersRoutes.POST("/register", allHandlers.userHandler.Register)
+				usersRoutes.POST("/login", allHandlers.userHandler.Login)
+			}
+		}
+	}
+
 }

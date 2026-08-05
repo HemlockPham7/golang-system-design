@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/HemlockPham7/golang-system-design/internal/service"
 	"github.com/HemlockPham7/golang-system-design/pkg/response"
+	"github.com/HemlockPham7/golang-system-design/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -16,10 +16,10 @@ type GenPass interface {
 }
 
 type genPassHandler struct {
-	genPassService service.GenPass
+	genPassService utils.GenPass
 }
 
-func NewGenPass(genPassService service.GenPass) GenPass {
+func NewGenPass(genPassService utils.GenPass) GenPass {
 	return &genPassHandler{genPassService: genPassService}
 }
 

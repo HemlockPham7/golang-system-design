@@ -1,5 +1,25 @@
 basePath: /
 definitions:
+  bookmark.createBookmarkRequest:
+    properties:
+      description:
+        example: Google
+        maxLength: 255
+        type: string
+      url:
+        example: https://www.google.com
+        maxLength: 2048
+        type: string
+    required:
+    - url
+    type: object
+  bookmark.createBookmarkResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Bookmark'
+      message:
+        type: string
+    type: object
   handler.shortenInputBody:
     properties:
       exp:
@@ -10,6 +30,23 @@ definitions:
     required:
     - exp
     - url
+    type: object
+  model.Bookmark:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: string
     type: object
   model.HealthCheckResponse:
     properties:
@@ -33,6 +70,12 @@ definitions:
       updated_at:
         type: string
       username:
+        type: string
+    type: object
+  response.Message:
+    properties:
+      details: {}
+      message:
         type: string
     type: object
   user.loginInput:
@@ -102,6 +145,89 @@ paths:
       summary: check redis health
       tags:
       - health-check
+  /v1/bookmarks:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of bookmarks for the authenticated user with pagination
+        and sorting
+      parameters:
+      - default: 1
+        description: Page number
+        example: 1
+        in: query
+        name: page
+        type: integer
+      - default: 5
+        description: Number of items per page
+        example: 5
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Message'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Message'
+      security:
+      - BearerAuth: []
+      summary: List bookmarks
+      tags:
+      - Bookmarks
+    post:
+      consumes:
+      - application/json
+      description: Create a new bookmark for the authenticated user
+      parameters:
+      - description: Create Bookmark Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/bookmark.createBookmarkRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/bookmark.createBookmarkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Message'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Message'
+      security:
+      - BearerAuth: []
+      summary: Create a new bookmark
+      tags:
+      - Bookmarks
   /v1/links/redirect/{code}:
     get:
       consumes:

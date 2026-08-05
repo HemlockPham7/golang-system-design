@@ -8,13 +8,17 @@ import (
 var errorFilters = []func(err error) (bool, error){
 	filterDuplicationUsername,
 	filterDuplicationEmail,
+	filterDuplicationType,
 	filterRecordNotFound,
+	filterForeignKeyError,
 }
 
 var (
 	ErrDuplicationUsername = errors.New("username already exists")
 	ErrDuplicationEmail    = errors.New("email already exists")
+	ErrDuplicationType     = errors.New("duplicated type error")
 	ErrRecordNotFound      = errors.New("record not found")
+	ErrForeignKeyType      = errors.New("foreign key constraint")
 )
 
 func CatchDBError(err error) error {
@@ -40,6 +44,14 @@ func filterDuplicationEmail(err error) (bool, error) {
 	return strings.Contains(strings.ToLower(err.Error()), `duplicate key value violates unique constraint "uni_users_email"`), ErrDuplicationEmail
 }
 
+func filterDuplicationType(err error) (bool, error) {
+	return strings.Contains(strings.ToLower(err.Error()), "unique constraint"), ErrDuplicationType
+}
+
 func filterRecordNotFound(err error) (bool, error) {
 	return strings.Contains(strings.ToLower(err.Error()), "record not found"), ErrRecordNotFound
+}
+
+func filterForeignKeyError(err error) (bool, error) {
+	return strings.Contains(strings.ToLower(err.Error()), "foreign key constraint"), ErrForeignKeyType
 }

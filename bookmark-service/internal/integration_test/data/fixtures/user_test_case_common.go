@@ -18,14 +18,14 @@ func (u *UserCommonTestDB) GenerateData() error {
 
 	users := []*model.User{
 		{
-			ID:          "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
+			Base:        GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd4"),
 			DisplayName: "John Doe",
 			Username:    "johndoe",
 			Password:    "johndoe",
 			Email:       "johndoe@gmail.com",
 		},
 		{
-			ID:          "d7c13097-67a7-4eae-a60e-0b9b533b7bd5",
+			Base:        GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd5"),
 			DisplayName: "Jane Doe",
 			Username:    "janedoe",
 			Password:    "janedoe",

@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/HemlockPham7/golang-system-design/internal/service/mocks"
+	"github.com/HemlockPham7/golang-system-design/pkg/utils/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
