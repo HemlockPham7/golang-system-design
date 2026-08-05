@@ -24,6 +24,10 @@ var (
 		Message: "Instance is not ready!",
 		Details: nil,
 	}
+	UnauthorizedResponse = Message{
+		Message: "Unauthorized",
+		Details: nil,
+	}
 )
 
 func InputFieldError(err error) Message {

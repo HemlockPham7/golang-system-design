@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"github.com/HemlockPham7/golang-system-design/internal/model"
 	redisPkg "github.com/HemlockPham7/golang-system-design/pkg/redis"
 	"github.com/HemlockPham7/golang-system-design/pkg/sqldb"
 	"github.com/redis/go-redis/v9"
@@ -9,15 +8,16 @@ import (
 )
 
 func CreateDB(envPrefix string) *gorm.DB {
-	db, err := sqldb.NewClient(envPrefix)
+	dbClient, err := sqldb.NewClient(envPrefix)
 	if err != nil {
 		panic(err)
 	}
-	err = db.AutoMigrate(&model.User{})
+	//err = db.AutoMigrate(&model.User{})
+	err = MigrateDB(dbClient)
 	if err != nil {
 		panic(err)
 	}
-	return db
+	return dbClient
 }
 
 func CreateRedisClient(envPrefix string) *redis.Client {
@@ -26,4 +26,10 @@ func CreateRedisClient(envPrefix string) *redis.Client {
 		panic(err)
 	}
 	return redisClient
+}
+
+const migrationPath = "file://./migration"
+
+func MigrateDB(dbClient *gorm.DB) error {
+	return sqldb.MigrateSQLDB(dbClient, migrationPath, "up", 0)
 }

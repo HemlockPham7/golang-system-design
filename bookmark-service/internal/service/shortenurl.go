@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
+	"github.com/HemlockPham7/golang-system-design/pkg/utils"
 )
 
 const codeLength = 7
@@ -16,10 +17,10 @@ type ShortenUrl interface {
 
 type shortenUrl struct {
 	storage repository.URLStorage
-	codeGen GenPass
+	codeGen utils.GenPass
 }
 
-func NewShortenUrl(storage repository.URLStorage, codeGen GenPass) ShortenUrl {
+func NewShortenUrl(storage repository.URLStorage, codeGen utils.GenPass) ShortenUrl {
 	return &shortenUrl{storage: storage, codeGen: codeGen}
 }
 

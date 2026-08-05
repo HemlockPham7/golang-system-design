@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"time"
 
 	"github.com/HemlockPham7/golang-system-design/internal/model"
 )
@@ -20,8 +19,6 @@ func (s *service) CreateUser(ctx context.Context, username, password, displayNam
 		Password:    hash,
 		Email:       email,
 		DisplayName: displayName,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
 	}
 
 	// call repo to create user
