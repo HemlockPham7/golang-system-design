@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	mockRepo "github.com/HemlockPham7/golang-system-design/internal/repository/mocks"
-	mockService "github.com/HemlockPham7/golang-system-design/internal/service/mocks"
+	mockService "github.com/HemlockPham7/golang-system-design/pkg/utils/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
