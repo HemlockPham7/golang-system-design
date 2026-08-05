@@ -12,6 +12,7 @@ import (
 	userHdl "github.com/HemlockPham7/golang-system-design/internal/handler/user"
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	bookmarkRepo "github.com/HemlockPham7/golang-system-design/internal/repository/bookmark"
+	"github.com/HemlockPham7/golang-system-design/internal/repository/cache"
 	userRepo "github.com/HemlockPham7/golang-system-design/internal/repository/user"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	bookmarkSvc "github.com/HemlockPham7/golang-system-design/internal/service/bookmark"
@@ -100,9 +101,12 @@ func (e *engine) initHandlers() *handlers {
 	userService := userSvc.NewService(userRepository, hasher, e.jwtGen)
 	userHandler := userHdl.NewHandler(userService)
 
+	distributedCache := cache.NewRedisDB(e.redisClient)
+
 	bookmarkRepository := bookmarkRepo.NewRepository(e.dbClient)
 	bookmarkService := bookmarkSvc.NewService(bookmarkRepository, genPassService)
-	bookmarkHandler := bookmarkHdl.NewHandler(bookmarkService)
+	bookmarkServiceWithCache := bookmarkSvc.NewBookmarkServiceWithCache(bookmarkService, distributedCache)
+	bookmarkHandler := bookmarkHdl.NewHandler(bookmarkServiceWithCache)
 
 	return &handlers{
 		genPassHandler:     genPassHandler,
