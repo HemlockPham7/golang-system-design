@@ -71,14 +71,13 @@ func TestBookmarkHandler_ImportBookmarks(t *testing.T) {
 					body,
 				)
 				ctx.Set("claims", jwt.MapClaims{
-					"sub": "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
+					"sub": "d7c13097-67a7-4eae-a60e-0b9b533b7bd5",
 				})
 				ctx.Request.Header.Set("Content-Type", writer.FormDataContentType())
 			},
 
 			mockQueueSetup: func(ctx context.Context) *mocks.Service {
-				serviceMock := mocks.NewService(t)
-				return serviceMock
+				return mocks.NewService(t)
 			},
 
 			fileContent:      "description,url\nGoogle,43134134\nFacebook,https://www.facebook.com",
