@@ -13,10 +13,12 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	bookmarkRepo "github.com/HemlockPham7/golang-system-design/internal/repository/bookmark"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/cache"
+	mqRepo "github.com/HemlockPham7/golang-system-design/internal/repository/queue"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/ratelimit"
 	userRepo "github.com/HemlockPham7/golang-system-design/internal/repository/user"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	bookmarkSvc "github.com/HemlockPham7/golang-system-design/internal/service/bookmark"
+	mqSvc "github.com/HemlockPham7/golang-system-design/internal/service/queue"
 	userSvc "github.com/HemlockPham7/golang-system-design/internal/service/user"
 	"github.com/HemlockPham7/golang-system-design/pkg/jwtutils"
 	"github.com/HemlockPham7/golang-system-design/pkg/utils"
@@ -27,6 +29,8 @@ import (
 
 	"gorm.io/gorm"
 )
+
+const queueName = "bookmark-import"
 
 // Engine interface for starting the application
 type Engine interface {
@@ -102,12 +106,17 @@ func (e *engine) initHandlers() *handlers {
 	userService := userSvc.NewService(userRepository, hasher, e.jwtGen)
 	userHandler := userHdl.NewHandler(userService)
 
+	// init cache db
 	distributedCache := cache.NewRedisDB(e.redisClient)
+
+	// init message queue
+	mqRepository := mqRepo.NewRedisQueue(e.redisClient, queueName)
+	mqService := mqSvc.NewService(mqRepository)
 
 	bookmarkRepository := bookmarkRepo.NewRepository(e.dbClient)
 	bookmarkService := bookmarkSvc.NewService(bookmarkRepository, genPassService)
 	bookmarkServiceWithCache := bookmarkSvc.NewBookmarkServiceWithCache(bookmarkService, distributedCache)
-	bookmarkHandler := bookmarkHdl.NewHandler(bookmarkServiceWithCache)
+	bookmarkHandler := bookmarkHdl.NewHandler(bookmarkServiceWithCache, mqService)
 
 	return &handlers{
 		genPassHandler:     genPassHandler,
@@ -166,6 +175,7 @@ func (e *engine) initRoutes() {
 			{
 				bookmarksRoutes.POST("/", allHandlers.bookmarkHandler.CreateBookmark)
 				bookmarksRoutes.GET("/", allHandlers.bookmarkHandler.GetBookmarks)
+				bookmarksRoutes.POST("/import", allHandlers.bookmarkHandler.ImportBookmarks)
 			}
 		}
 	}
