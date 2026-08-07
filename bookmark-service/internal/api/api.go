@@ -13,6 +13,7 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	bookmarkRepo "github.com/HemlockPham7/golang-system-design/internal/repository/bookmark"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/cache"
+	"github.com/HemlockPham7/golang-system-design/internal/repository/ratelimit"
 	userRepo "github.com/HemlockPham7/golang-system-design/internal/repository/user"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	bookmarkSvc "github.com/HemlockPham7/golang-system-design/internal/service/bookmark"
@@ -117,12 +118,28 @@ func (e *engine) initHandlers() *handlers {
 	}
 }
 
+type middlewares struct {
+	jwtAuth   middleware.JWTAuth
+	rateLimit middleware.RateLimit
+}
+
+// initMiddlewares initializes the middlewares
+func (e *engine) initMiddlewares() middlewares {
+	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
+
+	rateLimitRepository := ratelimit.NewRedisRepo(e.redisClient)
+	rateLimit := middleware.NewRateLimit(rateLimitRepository)
+
+	return middlewares{
+		jwtAuth:   jwtAuth,
+		rateLimit: rateLimit,
+	}
+}
+
 // initRoutes initializes the routes
 func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
-
-	// init middleware
-	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
+	allMiddlewares := e.initMiddlewares()
 
 	// genpass
 	e.app.GET("/genpass", allHandlers.genPassHandler.GeneratePassword)
@@ -135,7 +152,8 @@ func (e *engine) initRoutes() {
 	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	privateRoutes := e.app.Group("")
-	privateRoutes.Use(jwtAuth.JWTAuth())
+	privateRoutes.Use(allMiddlewares.jwtAuth.JWTAuth())
+	privateRoutes.Use(allMiddlewares.rateLimit.RateLimit())
 	{
 		privateV1Routes := privateRoutes.Group("/v1")
 		{
