@@ -61,3 +61,11 @@ bookmark-service/
 - "FATAL: invalid value for parameter "TimeZone": "Asia/Saigon""
 - https://github.com/dbeaver/dbeaver/issues/36487
 - Change the setting in preference in DBeaver to Asia/Ho_Chi_Minh
+
+## Vậy transaction của Redis đảm bảo điều gì?
+
+Nó đảm bảo:
+
+- Các command được queue trước.
+- Khi EXEC chạy, chúng được thực hiện liền nhau, không bị xen bởi client khác.
+- Nếu lỗi xảy ra khi một command đang chạy thì các command trước đó không bị hoàn tác.

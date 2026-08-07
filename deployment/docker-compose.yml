@@ -13,6 +13,9 @@ services:
         - redis
       env_file:
         - ./bookmark-service/.env
+      volumes:
+        - ./public.pem:/app/public.pem:Z
+        - ./private.pem:/app/private.pem:Z
 
     portal:
       image: ebvn/bookmark-app-portal:mono
