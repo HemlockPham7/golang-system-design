@@ -153,28 +153,28 @@ func TestBookmarkServiceWithCache_CreateBookmark(t *testing.T) {
 
 			setupService: func(ctx context.Context) *mock_bookmark.Service {
 				mockService := mock_bookmark.NewService(t)
-				mockService.On("CreateBookmark", ctx, "Bookmark 1", "https://www.google.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4").Return(&model.Bookmark{
+				mockService.On("CreateBookmark", ctx, "abc xyz", "https://www.youtube.com", "d7c13097-a60e-67a7-4eae-0b9b533b7bd4").Return(&model.Bookmark{
 					Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd6"),
-					Description: "Bookmark 1",
-					URL:         "https://www.google.com",
-					Code:        "bookmark1",
-					UserID:      "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
+					Description: "abc xyz",
+					URL:         "https://www.youtube.com",
+					Code:        "abcxyz",
+					UserID:      "d7c13097-a60e-67a7-4eae-0b9b533b7bd4",
 				}, nil)
 				return mockService
 			},
 
 			setupCache: func(ctx context.Context) *mock_cache.DB {
 				mockCache := mock_cache.NewDB(t)
-				mockCache.On("DeleteCache", ctx, "get_bookmarks_d7c13097-67a7-4eae-a60e-0b9b533b7bd4").Return(nil)
+				mockCache.On("DeleteCache", ctx, "get_bookmarks_d7c13097-a60e-67a7-4eae-0b9b533b7bd4").Return(nil)
 				return mockCache
 			},
 
 			expectedResult: &model.Bookmark{
 				Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd6"),
-				Description: "Bookmark 1",
-				URL:         "https://www.google.com",
-				Code:        "bookmark1",
-				UserID:      "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
+				Description: "abc xyz",
+				URL:         "https://www.youtube.com",
+				Code:        "abcxyz",
+				UserID:      "d7c13097-a60e-67a7-4eae-0b9b533b7bd4",
 			},
 			expectedError: nil,
 		},
@@ -183,13 +183,13 @@ func TestBookmarkServiceWithCache_CreateBookmark(t *testing.T) {
 
 			setupService: func(ctx context.Context) *mock_bookmark.Service {
 				mockService := mock_bookmark.NewService(t)
-				mockService.On("CreateBookmark", ctx, "Bookmark 1", "https://www.google.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4").Return(nil, assert.AnError)
+				mockService.On("CreateBookmark", ctx, "abc xyz", "https://www.youtube.com", "d7c13097-a60e-67a7-4eae-0b9b533b7bd4").Return(nil, assert.AnError)
 				return mockService
 			},
 
 			setupCache: func(ctx context.Context) *mock_cache.DB {
 				mockCache := mock_cache.NewDB(t)
-				mockCache.On("DeleteCache", ctx, "get_bookmarks_d7c13097-67a7-4eae-a60e-0b9b533b7bd4").Return(assert.AnError)
+				mockCache.On("DeleteCache", ctx, "get_bookmarks_d7c13097-a60e-67a7-4eae-0b9b533b7bd4").Return(assert.AnError)
 				return mockCache
 			},
 
@@ -207,7 +207,7 @@ func TestBookmarkServiceWithCache_CreateBookmark(t *testing.T) {
 			mockCache := tc.setupCache(ctx)
 
 			testService := bookmark.NewBookmarkServiceWithCache(mockService, mockCache)
-			bookmarkResult, err := testService.CreateBookmark(ctx, "Bookmark 1", "https://www.google.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4")
+			bookmarkResult, err := testService.CreateBookmark(ctx, "abc xyz", "https://www.youtube.com", "d7c13097-a60e-67a7-4eae-0b9b533b7bd4")
 
 			assert.Equal(t, tc.expectedResult, bookmarkResult)
 			assert.Equal(t, tc.expectedError, err)
@@ -232,11 +232,11 @@ func TestBookmarkServiceWithCache_UpdateBookmark(t *testing.T) {
 
 			setupService: func(ctx context.Context) *mock_bookmark.Service {
 				mockService := mock_bookmark.NewService(t)
-				mockService.On("UpdateBookmark", ctx, "Bookmark 1", "https://www.google.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6").Return(&model.Bookmark{
+				mockService.On("UpdateBookmark", ctx, "123 456", "https://www.facebook.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6").Return(&model.Bookmark{
 					Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd6"),
-					Description: "Bookmark 1",
-					URL:         "https://www.google.com",
-					Code:        "bookmark1",
+					Description: "123 456",
+					URL:         "https://www.facebook.com",
+					Code:        "123456",
 					UserID:      "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
 				}, nil)
 				return mockService
@@ -250,9 +250,9 @@ func TestBookmarkServiceWithCache_UpdateBookmark(t *testing.T) {
 
 			expectedResult: &model.Bookmark{
 				Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd6"),
-				Description: "Bookmark 1",
-				URL:         "https://www.google.com",
-				Code:        "bookmark1",
+				Description: "123 456",
+				URL:         "https://www.facebook.com",
+				Code:        "123456",
 				UserID:      "d7c13097-67a7-4eae-a60e-0b9b533b7bd4",
 			},
 			expectedError: nil,
@@ -262,7 +262,7 @@ func TestBookmarkServiceWithCache_UpdateBookmark(t *testing.T) {
 
 			setupService: func(ctx context.Context) *mock_bookmark.Service {
 				mockService := mock_bookmark.NewService(t)
-				mockService.On("UpdateBookmark", ctx, "Bookmark 1", "https://www.google.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6").Return(nil, assert.AnError)
+				mockService.On("UpdateBookmark", ctx, "123 456", "https://www.facebook.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6").Return(nil, assert.AnError)
 				return mockService
 			},
 
@@ -286,7 +286,7 @@ func TestBookmarkServiceWithCache_UpdateBookmark(t *testing.T) {
 			mockCache := tc.setupCache(ctx)
 
 			testService := bookmark.NewBookmarkServiceWithCache(mockService, mockCache)
-			bookmarkResult, err := testService.UpdateBookmark(ctx, "Bookmark 1", "https://www.google.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6")
+			bookmarkResult, err := testService.UpdateBookmark(ctx, "123 456", "https://www.facebook.com", "d7c13097-67a7-4eae-a60e-0b9b533b7bd4", "d7c13097-67a7-4eae-a60e-0b9b533b7bd6")
 
 			assert.Equal(t, tc.expectedResult, bookmarkResult)
 			assert.Equal(t, tc.expectedError, err)

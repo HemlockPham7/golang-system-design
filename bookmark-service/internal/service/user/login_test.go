@@ -35,27 +35,27 @@ func TestUserService_Login(t *testing.T) {
 
 			setupMockUserRepository: func(ctx context.Context) *mock_user.Repository {
 				repoMock := mock_user.NewRepository(t)
-				repoMock.On("GetUserByUsername", ctx, "janedoe").Return(&model.User{
-					Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd5"),
-					DisplayName: "Jane Doe",
-					Username:    "janedoe",
-					Password:    "janedoe",
-					Email:       "janedoe@gmail.com",
+				repoMock.On("GetUserByUsername", ctx, "abcxyz").Return(&model.User{
+					Base:        fixtures.GetTestBase("d7c13097-a60e-4eae-67a7-0b9b533b7bd5"),
+					DisplayName: "abc xyz",
+					Username:    "abcxyz",
+					Password:    "abcxyz",
+					Email:       "abcxyz@example.com",
 				}, nil)
 				return repoMock
 			},
 
 			setupMockPasswordHash: func(t *testing.T) *mock_hasher.Hasher {
 				hashingMock := mock_hasher.NewHasher(t)
-				hashingMock.On("Compare", "janedoe", "janedoe").Return(true)
+				hashingMock.On("Compare", "abcxyz", "abcxyz").Return(true)
 				return hashingMock
 			},
 
 			setupMockJWTGen: func(t *testing.T) *mock_jwtgen.JWTGenerator {
 				jwtGeneratorMock := mock_jwtgen.NewJWTGenerator(t)
 				tokenContent := jwt.MapClaims{
-					"sub":   "d7c13097-67a7-4eae-a60e-0b9b533b7bd5",
-					"email": "janedoe@gmail.com",
+					"sub":   "d7c13097-a60e-4eae-67a7-0b9b533b7bd5",
+					"email": "abcxyz@example.com",
 					"iat":   time.Now().Unix(),
 					"exp":   time.Now().Add(tokenDuration).Unix(),
 				}
@@ -63,8 +63,8 @@ func TestUserService_Login(t *testing.T) {
 				return jwtGeneratorMock
 			},
 
-			inputUsername:  "janedoe",
-			inputPassword:  "janedoe",
+			inputUsername:  "abcxyz",
+			inputPassword:  "abcxyz",
 			expectedError:  nil,
 			expectedOutput: "mocked_jwt_token",
 		},
@@ -97,19 +97,19 @@ func TestUserService_Login(t *testing.T) {
 
 			setupMockUserRepository: func(ctx context.Context) *mock_user.Repository {
 				repoMock := mock_user.NewRepository(t)
-				repoMock.On("GetUserByUsername", ctx, "janedoe").Return(&model.User{
+				repoMock.On("GetUserByUsername", ctx, "1234567").Return(&model.User{
 					Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd5"),
 					DisplayName: "Jane Doe",
-					Username:    "janedoe",
-					Password:    "janedoe",
-					Email:       "janedoe@gmail.com",
+					Username:    "1234567",
+					Password:    "1234567",
+					Email:       "1234567@gmail.com",
 				}, nil)
 				return repoMock
 			},
 
 			setupMockPasswordHash: func(t *testing.T) *mock_hasher.Hasher {
 				hashingMock := mock_hasher.NewHasher(t)
-				hashingMock.On("Compare", "janedoe", "janedoe").Return(false)
+				hashingMock.On("Compare", "1234567", "1234567").Return(false)
 				return hashingMock
 			},
 
@@ -118,8 +118,8 @@ func TestUserService_Login(t *testing.T) {
 				return jwtGeneratorMock
 			},
 
-			inputUsername:  "janedoe",
-			inputPassword:  "janedoe",
+			inputUsername:  "1234567",
+			inputPassword:  "1234567",
 			expectedError:  ErrInvalidCredentials,
 			expectedOutput: "",
 		},
@@ -128,19 +128,19 @@ func TestUserService_Login(t *testing.T) {
 
 			setupMockUserRepository: func(ctx context.Context) *mock_user.Repository {
 				repoMock := mock_user.NewRepository(t)
-				repoMock.On("GetUserByUsername", ctx, "janedoe").Return(&model.User{
+				repoMock.On("GetUserByUsername", ctx, "111111111").Return(&model.User{
 					Base:        fixtures.GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7bd5"),
 					DisplayName: "Jane Doe",
-					Username:    "janedoe",
-					Password:    "janedoe",
-					Email:       "janedoe@gmail.com",
+					Username:    "111111111",
+					Password:    "111111111",
+					Email:       "111111111@gmail.com",
 				}, nil)
 				return repoMock
 			},
 
 			setupMockPasswordHash: func(t *testing.T) *mock_hasher.Hasher {
 				hashingMock := mock_hasher.NewHasher(t)
-				hashingMock.On("Compare", "janedoe", "janedoe").Return(true)
+				hashingMock.On("Compare", "111111111", "111111111").Return(true)
 				return hashingMock
 			},
 
@@ -148,7 +148,7 @@ func TestUserService_Login(t *testing.T) {
 				jwtGeneratorMock := mock_jwtgen.NewJWTGenerator(t)
 				tokenContent := jwt.MapClaims{
 					"sub":   "d7c13097-67a7-4eae-a60e-0b9b533b7bd5",
-					"email": "janedoe@gmail.com",
+					"email": "111111111@gmail.com",
 					"iat":   time.Now().Unix(),
 					"exp":   time.Now().Add(tokenDuration).Unix(),
 				}
@@ -156,8 +156,8 @@ func TestUserService_Login(t *testing.T) {
 				return jwtGeneratorMock
 			},
 
-			inputUsername:  "janedoe",
-			inputPassword:  "janedoe",
+			inputUsername:  "111111111",
+			inputPassword:  "111111111",
 			expectedError:  ErrCannotGenerateToken,
 			expectedOutput: "",
 		},
