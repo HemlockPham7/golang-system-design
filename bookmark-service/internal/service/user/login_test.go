@@ -35,13 +35,14 @@ func TestUserService_Login(t *testing.T) {
 
 			setupMockUserRepository: func(ctx context.Context) *mock_user.Repository {
 				repoMock := mock_user.NewRepository(t)
-				repoMock.On("GetUserByUsername", ctx, "abcxyz").Return(&model.User{
+				expectedUser := &model.User{
 					Base:        fixtures.GetTestBase("d7c13097-a60e-4eae-67a7-0b9b533b7bd5"),
 					DisplayName: "abc xyz",
 					Username:    "abcxyz",
 					Password:    "abcxyz",
 					Email:       "abcxyz@example.com",
-				}, nil)
+				}
+				repoMock.On("GetUserByUsername", ctx, "abcxyz").Return(expectedUser, nil)
 				return repoMock
 			},
 
@@ -146,13 +147,12 @@ func TestUserService_Login(t *testing.T) {
 
 			setupMockJWTGen: func(t *testing.T) *mock_jwtgen.JWTGenerator {
 				jwtGeneratorMock := mock_jwtgen.NewJWTGenerator(t)
-				tokenContent := jwt.MapClaims{
+				jwtGeneratorMock.On("GenerateJWT", jwt.MapClaims{
 					"sub":   "d7c13097-67a7-4eae-a60e-0b9b533b7bd5",
 					"email": "111111111@gmail.com",
 					"iat":   time.Now().Unix(),
 					"exp":   time.Now().Add(tokenDuration).Unix(),
-				}
-				jwtGeneratorMock.On("GenerateJWT", tokenContent).Return("", ErrCannotGenerateToken)
+				}).Return("", ErrCannotGenerateToken)
 				return jwtGeneratorMock
 			},
 		},
