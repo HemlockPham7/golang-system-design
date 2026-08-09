@@ -12,6 +12,7 @@ import (
 const tokenDuration = time.Hour * 24
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
+var ErrCannotGenerateToken = errors.New("cannot generate token")
 
 func (s *service) Login(ctx context.Context, username, password string) (string, error) {
 	// check user exists with username
@@ -38,7 +39,7 @@ func (s *service) Login(ctx context.Context, username, password string) (string,
 	}
 	tokenString, err := s.jwtGenerator.GenerateJWT(tokenContent)
 	if err != nil {
-		return "", err
+		return "", ErrCannotGenerateToken
 	}
 
 	// return token
