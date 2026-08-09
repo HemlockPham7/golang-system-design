@@ -7,8 +7,9 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+//go:generate mockery --name Repository --filename common.go --outpkg mock_ratelimit
 type Repository interface {
-	IncreaseRateLimit(ctx context.Context, key string, exp time.Duration)
+	IncreaseRateLimit(ctx context.Context, key string, exp time.Duration) error
 	GetCurrentRateLimit(ctx context.Context, key string) (int, error)
 }
 

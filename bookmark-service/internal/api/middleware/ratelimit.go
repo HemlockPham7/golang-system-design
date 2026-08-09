@@ -53,7 +53,9 @@ func (r *rateLimit) RateLimit() gin.HandlerFunc {
 		}
 
 		// increase rate limit
-		r.repository.IncreaseRateLimit(c, rateLimitKey, rateLimitInterval)
+		if err := r.repository.IncreaseRateLimit(c, rateLimitKey, rateLimitInterval); err != nil {
+			log.Error().Err(err).Msg("failed to increase rate limit")
+		}
 		c.Next()
 	}
 }
