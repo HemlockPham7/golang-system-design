@@ -78,13 +78,11 @@ func TestUserService_Login(t *testing.T) {
 			},
 
 			setupMockPasswordHash: func(t *testing.T) *mock_hasher.Hasher {
-				hashingMock := mock_hasher.NewHasher(t)
-				return hashingMock
+				return mock_hasher.NewHasher(t)
 			},
 
 			setupMockJWTGen: func(t *testing.T) *mock_jwtgen.JWTGenerator {
-				jwtGeneratorMock := mock_jwtgen.NewJWTGenerator(t)
-				return jwtGeneratorMock
+				return mock_jwtgen.NewJWTGenerator(t)
 			},
 
 			inputUsername:  "janedoe",
@@ -93,7 +91,11 @@ func TestUserService_Login(t *testing.T) {
 			expectedOutput: "",
 		},
 		{
-			name: "invalid password",
+			name:           "invalid password",
+			inputUsername:  "1234567",
+			inputPassword:  "1234567",
+			expectedError:  ErrInvalidCredentials,
+			expectedOutput: "",
 
 			setupMockUserRepository: func(ctx context.Context) *mock_user.Repository {
 				repoMock := mock_user.NewRepository(t)
@@ -114,17 +116,15 @@ func TestUserService_Login(t *testing.T) {
 			},
 
 			setupMockJWTGen: func(t *testing.T) *mock_jwtgen.JWTGenerator {
-				jwtGeneratorMock := mock_jwtgen.NewJWTGenerator(t)
-				return jwtGeneratorMock
+				return mock_jwtgen.NewJWTGenerator(t)
 			},
-
-			inputUsername:  "1234567",
-			inputPassword:  "1234567",
-			expectedError:  ErrInvalidCredentials,
-			expectedOutput: "",
 		},
 		{
-			name: "Fail to generate JWT",
+			name:           "Fail to generate JWT",
+			expectedError:  ErrCannotGenerateToken,
+			expectedOutput: "",
+			inputUsername:  "111111111",
+			inputPassword:  "111111111",
 
 			setupMockUserRepository: func(ctx context.Context) *mock_user.Repository {
 				repoMock := mock_user.NewRepository(t)
@@ -155,11 +155,6 @@ func TestUserService_Login(t *testing.T) {
 				jwtGeneratorMock.On("GenerateJWT", tokenContent).Return("", ErrCannotGenerateToken)
 				return jwtGeneratorMock
 			},
-
-			inputUsername:  "111111111",
-			inputPassword:  "111111111",
-			expectedError:  ErrCannotGenerateToken,
-			expectedOutput: "",
 		},
 	}
 
