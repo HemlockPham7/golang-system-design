@@ -158,6 +158,31 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			expectedCode:     http.StatusInternalServerError,
 			expectedResponse: `{"message":"Processing Error"}`,
 		},
+		{
+			name: "duplicate error",
+
+			inputRequest: &createBookmarkRequest{
+				URL:         "https://youtube.com",
+				Description: "Webiste to watch videos",
+			},
+
+			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
+				reqBody, _ := json.Marshal(inputRequest)
+				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
+				ctx.Request.Header.Set("Content-Type", "application/json")
+				ctx.Set("claims", jwtClaims)
+			},
+
+			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
+				serviceMock := mock_bookmark.NewService(t)
+				serviceMock.On("CreateBookmark", ctx, inputRequest.Description, inputRequest.URL, "user-123").
+					Return(nil, dbutils.ErrDuplicationType)
+				return serviceMock
+			},
+
+			expectedCode:     http.StatusBadRequest,
+			expectedResponse: `{"message":"Input Error"}`,
+		},
 	}
 
 	for _, tc := range testCases {
