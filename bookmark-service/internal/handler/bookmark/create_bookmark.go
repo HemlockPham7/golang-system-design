@@ -39,7 +39,6 @@ func (h *bookmarkHandler) CreateBookmark(c *gin.Context) {
 	// get input
 	input, uid, err := requestutils.BindInputFromRequestWithAuth[createBookmarkRequest](c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.InputErrResponse)
 		return
 	}
 
@@ -58,7 +57,7 @@ func (h *bookmarkHandler) CreateBookmark(c *gin.Context) {
 			Str("operation", "CreateBookmark").
 			Err(err).
 			Msg("service return error when create bookmark")
-		c.JSON(http.StatusInternalServerError, response.InstanseErrResponse)
+		c.JSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 
