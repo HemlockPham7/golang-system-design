@@ -92,7 +92,7 @@ func TestRateLimit_RateLimit(t *testing.T) {
 
 			setupRateLimitRepository: func(ctx context.Context) *mock_ratelimit.Repository {
 				mockRateLimit := mock_ratelimit.NewRepository(t)
-				mockRateLimit.On("GetCurrentRateLimit", ctx, "rate_limit:de305d54-75b4-431b-adb2-eb6b9e546099").Return(rateLimitCount, nil)
+				mockRateLimit.On("GetCurrentRateLimit", ctx, "rate_limit:de305d54-75b4-431b-adb2-eb6b9e546099").Return(RateLimitCount, nil)
 				return mockRateLimit
 			},
 
