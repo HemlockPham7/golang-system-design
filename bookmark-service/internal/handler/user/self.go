@@ -27,7 +27,7 @@ func (h *userHandler) GetSelfInfo(c *gin.Context) {
 	currentUser, err := h.service.GetSelfInfo(c, uid)
 	if err != nil {
 		log.Err(err).Msg("Failed to get self info")
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InputErrResponse)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 
