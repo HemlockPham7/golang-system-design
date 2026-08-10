@@ -43,10 +43,7 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			},
 
 			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
-				reqBody, _ := json.Marshal(inputRequest)
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwtClaims)
+				setupRequestService(ctx, inputRequest.URL, inputRequest.Description, true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
@@ -74,9 +71,7 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			},
 
 			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
-				reqBody, _ := json.Marshal(inputRequest)
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
+				setupRequestService(ctx, inputRequest.URL, inputRequest.Description, false)
 			},
 
 			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
@@ -95,10 +90,7 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			},
 
 			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
-				reqBody, _ := json.Marshal(inputRequest)
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwtClaims)
+				setupRequestService(ctx, inputRequest.URL, inputRequest.Description, true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
@@ -120,10 +112,7 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			},
 
 			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
-				reqBody, _ := json.Marshal(inputRequest)
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwtClaims)
+				setupRequestService(ctx, inputRequest.URL, inputRequest.Description, true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
@@ -142,10 +131,7 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			},
 
 			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
-				reqBody, _ := json.Marshal(inputRequest)
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwtClaims)
+				setupRequestService(ctx, inputRequest.URL, inputRequest.Description, true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
@@ -167,10 +153,7 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			},
 
 			setupRequest: func(ctx *gin.Context, inputRequest *createBookmarkRequest) {
-				reqBody, _ := json.Marshal(inputRequest)
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
-				ctx.Set("claims", jwtClaims)
+				setupRequestService(ctx, inputRequest.URL, inputRequest.Description, true)
 			},
 
 			setupMockSvc: func(ctx *gin.Context, inputRequest *createBookmarkRequest) *mock_bookmark.Service {
@@ -203,5 +186,18 @@ func TestBookmarkHandler_CreateBookmark(t *testing.T) {
 			assert.Equal(t, tc.expectedCode, rec.Code)
 			assert.Equal(t, tc.expectedResponse, strings.TrimSpace(rec.Body.String()))
 		})
+	}
+}
+
+func setupRequestService(ctx *gin.Context, url, description string, haveClaim bool) {
+	inputRequest := &createBookmarkRequest{
+		URL:         url,
+		Description: description,
+	}
+	reqBody, _ := json.Marshal(inputRequest)
+	ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/bookamrks", strings.NewReader(string(reqBody)))
+	ctx.Request.Header.Set("Content-Type", "application/json")
+	if haveClaim {
+		ctx.Set("claims", jwtClaims)
 	}
 }

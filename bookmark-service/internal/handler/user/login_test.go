@@ -13,6 +13,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func setupLoginRequest(ctx *gin.Context, username, password string) {
+	reqBody, _ := json.Marshal(&loginInput{
+		Username: username,
+		Password: password,
+	})
+	ctx.Request = httptest.NewRequest(
+		"POST",
+		"/v1/users/login",
+		strings.NewReader(string(reqBody)),
+	)
+	ctx.Request.Header.Set("Content-Type", "application/json")
+}
+
 func TestUserHandler_Login(t *testing.T) {
 	t.Parallel()
 
@@ -29,12 +42,7 @@ func TestUserHandler_Login(t *testing.T) {
 			name: "successful login",
 
 			setupRequest: func(ctx *gin.Context) {
-				reqBody, _ := json.Marshal(&loginInput{
-					Username: "user-123",
-					Password: "password",
-				})
-				ctx.Request = httptest.NewRequest("POST", "/v1/users/login", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
+				setupLoginRequest(ctx, "user-123", "password")
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mockUserService.Service {
@@ -51,12 +59,7 @@ func TestUserHandler_Login(t *testing.T) {
 			name: "invalid input",
 
 			setupRequest: func(ctx *gin.Context) {
-				reqBody, _ := json.Marshal(&loginInput{
-					Username: "",
-					Password: "",
-				})
-				ctx.Request = httptest.NewRequest("POST", "/v1/users/login", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
+				setupLoginRequest(ctx, "", "")
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mockUserService.Service {
@@ -70,12 +73,7 @@ func TestUserHandler_Login(t *testing.T) {
 			name: "user invalid credentials",
 
 			setupRequest: func(ctx *gin.Context) {
-				reqBody, _ := json.Marshal(&loginInput{
-					Username: "user-123",
-					Password: "password",
-				})
-				ctx.Request = httptest.NewRequest("POST", "/v1/users/login", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
+				setupLoginRequest(ctx, "user-123", "password")
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mockUserService.Service {
@@ -92,12 +90,7 @@ func TestUserHandler_Login(t *testing.T) {
 			name: "internal error server",
 
 			setupRequest: func(ctx *gin.Context) {
-				reqBody, _ := json.Marshal(&loginInput{
-					Username: "user-123",
-					Password: "password",
-				})
-				ctx.Request = httptest.NewRequest("POST", "/v1/users/login", strings.NewReader(string(reqBody)))
-				ctx.Request.Header.Set("Content-Type", "application/json")
+				setupLoginRequest(ctx, "user-123", "password")
 			},
 
 			setupMockSvc: func(ctx *gin.Context) *mockUserService.Service {

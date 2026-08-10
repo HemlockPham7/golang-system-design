@@ -57,7 +57,7 @@ func (h *userHandler) Register(c *gin.Context) {
 	case err == nil:
 	default:
 		log.Err(err).Msg("Failed to register user")
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InstanseErrResponse)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 
