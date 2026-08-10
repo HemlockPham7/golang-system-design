@@ -46,7 +46,7 @@ func (h *userHandler) Login(c *gin.Context) {
 	case err == nil:
 	default:
 		log.Err(err).Msg("Failed to login user")
-		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InputErrResponse)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 
