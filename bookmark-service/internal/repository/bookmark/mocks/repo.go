@@ -44,6 +44,24 @@ func (_m *Repository) CreateBookmark(ctx context.Context, _a1 *model.Bookmark) (
 	return r0, r1
 }
 
+// DeleteBookmarkByID provides a mock function with given fields: ctx, userID, bookmarkID
+func (_m *Repository) DeleteBookmarkByID(ctx context.Context, userID string, bookmarkID string) error {
+	ret := _m.Called(ctx, userID, bookmarkID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteBookmarkByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, userID, bookmarkID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // GetBookmarks provides a mock function with given fields: ctx, userID, limit, offset
 func (_m *Repository) GetBookmarks(ctx context.Context, userID string, limit int, offset int) ([]*model.Bookmark, int64, error) {
 	ret := _m.Called(ctx, userID, limit, offset)
@@ -79,6 +97,36 @@ func (_m *Repository) GetBookmarks(ctx context.Context, userID string, limit int
 	}
 
 	return r0, r1, r2
+}
+
+// UpdateBookmarkByID provides a mock function with given fields: ctx, updatedBookmark, userID, bookmarkID
+func (_m *Repository) UpdateBookmarkByID(ctx context.Context, updatedBookmark *model.Bookmark, userID string, bookmarkID string) (*model.Bookmark, error) {
+	ret := _m.Called(ctx, updatedBookmark, userID, bookmarkID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateBookmarkByID")
+	}
+
+	var r0 *model.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *model.Bookmark, string, string) (*model.Bookmark, error)); ok {
+		return rf(ctx, updatedBookmark, userID, bookmarkID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *model.Bookmark, string, string) *model.Bookmark); ok {
+		r0 = rf(ctx, updatedBookmark, userID, bookmarkID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Bookmark)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *model.Bookmark, string, string) error); ok {
+		r1 = rf(ctx, updatedBookmark, userID, bookmarkID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewRepository creates a new instance of Repository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

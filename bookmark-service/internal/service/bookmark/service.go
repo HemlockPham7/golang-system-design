@@ -11,8 +11,8 @@ import (
 //go:generate mockery --name Service --filename service.go --outpkg mock_bookmark
 type Service interface {
 	CreateBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
-	UpdateBookmark(ctx context.Context, description, url, userID, ID string) (*model.Bookmark, error)
-	DeleteBookmark(ctx context.Context, userID, ID string) error
+	UpdateBookmarkByID(ctx context.Context, description, url, userID, bookmarkID string) (*model.Bookmark, error)
+	DeleteBookmarkByID(ctx context.Context, userID, ID string) error
 	GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error)
 }
 

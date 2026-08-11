@@ -8,8 +8,8 @@ import (
 
 type Handler interface {
 	CreateBookmark(c *gin.Context)
-	UpdateBookmark(c *gin.Context)
-	DeleteBookmark(c *gin.Context)
+	UpdateBookmarkByID(c *gin.Context)
+	DeleteBookmarkByID(c *gin.Context)
 	GetBookmarks(c *gin.Context)
 	ImportBookmarks(c *gin.Context)
 }

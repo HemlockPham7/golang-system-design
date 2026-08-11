@@ -181,6 +181,8 @@ func (e *engine) initRoutes() {
 				bookmarksRoutes.POST("/", allHandlers.bookmarkHandler.CreateBookmark)
 				bookmarksRoutes.GET("/", allHandlers.bookmarkHandler.GetBookmarks)
 				bookmarksRoutes.POST("/import", allHandlers.bookmarkHandler.ImportBookmarks)
+				bookmarksRoutes.DELETE("/:id", allHandlers.bookmarkHandler.DeleteBookmarkByID)
+				bookmarksRoutes.PUT("/:id", allHandlers.bookmarkHandler.UpdateBookmarkByID)
 			}
 		}
 	}

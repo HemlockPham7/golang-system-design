@@ -36,24 +36,24 @@ func (s *bookmarkServiceWithCache) CreateBookmark(ctx context.Context, descripti
 	return s.s.CreateBookmark(ctx, description, url, userID)
 }
 
-func (s *bookmarkServiceWithCache) UpdateBookmark(ctx context.Context, description, url, userID, ID string) (*model.Bookmark, error) {
+func (s *bookmarkServiceWithCache) UpdateBookmarkByID(ctx context.Context, description, url, userID, ID string) (*model.Bookmark, error) {
 	cacheGroupKey := fmt.Sprintf(getBookmarksCacheGroupKeyFormat, userID)
 	err := s.c.DeleteCache(ctx, cacheGroupKey)
 	if err != nil {
 		log.Err(err).Str("key", cacheGroupKey).Msg("Failed to delete cache")
 	}
 
-	return s.s.UpdateBookmark(ctx, description, url, userID, ID)
+	return s.s.UpdateBookmarkByID(ctx, description, url, userID, ID)
 }
 
-func (s *bookmarkServiceWithCache) DeleteBookmark(ctx context.Context, userID, ID string) error {
+func (s *bookmarkServiceWithCache) DeleteBookmarkByID(ctx context.Context, userID, ID string) error {
 	cacheGroupKey := fmt.Sprintf(getBookmarksCacheGroupKeyFormat, userID)
 	err := s.c.DeleteCache(ctx, cacheGroupKey)
 	if err != nil {
 		log.Err(err).Str("key", cacheGroupKey).Msg("Failed to delete cache")
 	}
 
-	return s.s.DeleteBookmark(ctx, userID, ID)
+	return s.s.DeleteBookmarkByID(ctx, userID, ID)
 }
 
 func (s *bookmarkServiceWithCache) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error) {
