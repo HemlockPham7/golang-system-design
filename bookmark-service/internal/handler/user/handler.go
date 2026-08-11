@@ -9,6 +9,7 @@ type Handler interface {
 	Register(c *gin.Context)
 	Login(c *gin.Context)
 	GetSelfInfo(c *gin.Context)
+	UpdateUserByID(c *gin.Context)
 }
 
 type userHandler struct {

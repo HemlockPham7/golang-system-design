@@ -21,7 +21,7 @@ var allowedFileTypes = []string{"text/csv", "aplication/csv", "text/plain", "app
 // ImportBookmarks handles file uploads
 // @Summary Upload and parse a csv file of bookmarks
 // @Description Accepts a csv file and import bookmarks
-// @Tags bookmark
+// @Tags Bookmarks
 // @Security BearerAuth
 // @Accept multipart/form-data
 // @Produce json

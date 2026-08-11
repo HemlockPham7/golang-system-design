@@ -112,6 +112,13 @@ definitions:
       message:
         type: string
     type: object
+  user.updateUserRequest:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+    type: object
 info:
   contact: {}
   description: API for managing bookmarks
@@ -228,6 +235,32 @@ paths:
       summary: Create a new bookmark
       tags:
       - Bookmarks
+  /v1/bookmarks/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Accepts a csv file and import bookmarks
+      parameters:
+      - description: CSV file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Upload and parse a csv file of bookmarks
+      tags:
+      - Bookmarks
   /v1/links/redirect/{code}:
     get:
       consumes:
@@ -336,6 +369,30 @@ paths:
           schema:
             $ref: '#/definitions/user.registerResponse'
       summary: Register a new user
+      tags:
+      - User
+  /v1/users/update:
+    put:
+      consumes:
+      - application/json
+      description: update user by ID
+      parameters:
+      - description: User update details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.updateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Message'
+      security:
+      - BearerAuth: []
+      summary: update user by ID
       tags:
       - User
 securityDefinitions:
