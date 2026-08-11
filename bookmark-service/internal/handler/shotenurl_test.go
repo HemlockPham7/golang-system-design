@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	"github.com/HemlockPham7/golang-system-design/internal/service/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -40,6 +41,55 @@ func TestShortenUrl_Redirect(t *testing.T) {
 
 			expectedStatus:   http.StatusFound,
 			expectedResponse: "https://www.google.com",
+		},
+		{
+			name: "code is empty",
+
+			setupRequest: func(ctx *gin.Context) {
+				ctx.Request = httptest.NewRequest(http.MethodGet, "/v1/links/redirect/1234567", nil)
+				ctx.Params = gin.Params{{"code", ""}}
+			},
+
+			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
+				return mocks.NewShortenUrl(t)
+			},
+
+			expectedStatus:   http.StatusBadRequest,
+			expectedResponse: ``,
+		},
+		{
+			name: "code not found",
+
+			setupRequest: func(ctx *gin.Context) {
+				ctx.Request = httptest.NewRequest(http.MethodGet, "/v1/links/redirect/1234567", nil)
+				ctx.Params = gin.Params{{"code", "1234567"}}
+			},
+
+			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
+				serviceMock := mocks.NewShortenUrl(t)
+				serviceMock.On("GetLinkFromCode", ctx, "1234567").Return("", repository.ErrCodeNotFound)
+				return serviceMock
+			},
+
+			expectedStatus:   http.StatusNotFound,
+			expectedResponse: ``,
+		},
+		{
+			name: "internal error server",
+
+			setupRequest: func(ctx *gin.Context) {
+				ctx.Request = httptest.NewRequest(http.MethodGet, "/v1/links/redirect/1234567", nil)
+				ctx.Params = gin.Params{{"code", "1234567"}}
+			},
+
+			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
+				serviceMock := mocks.NewShortenUrl(t)
+				serviceMock.On("GetLinkFromCode", ctx, "1234567").Return("", assert.AnError)
+				return serviceMock
+			},
+
+			expectedStatus:   http.StatusInternalServerError,
+			expectedResponse: ``,
 		},
 	}
 
