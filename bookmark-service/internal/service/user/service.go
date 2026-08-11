@@ -9,6 +9,7 @@ import (
 	"github.com/HemlockPham7/golang-system-design/pkg/utils"
 )
 
+//go:generate mockery --name Service --filename service.go --outpkg mockUserService
 type Service interface {
 	CreateUser(ctx context.Context, username, password, displayName, email string) (*model.User, error)
 	Login(ctx context.Context, username, password string) (string, error)

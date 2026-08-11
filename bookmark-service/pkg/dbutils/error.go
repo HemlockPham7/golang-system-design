@@ -11,6 +11,7 @@ var errorFilters = []func(err error) (bool, error){
 	filterDuplicationType,
 	filterRecordNotFound,
 	filterForeignKeyError,
+	filterRecordNotFoundType,
 }
 
 var (
@@ -19,6 +20,7 @@ var (
 	ErrDuplicationType     = errors.New("duplicated type error")
 	ErrRecordNotFound      = errors.New("record not found")
 	ErrForeignKeyType      = errors.New("foreign key constraint")
+	ErrRecordNotFoundType  = errors.New("record not found")
 )
 
 func CatchDBError(err error) error {
@@ -54,4 +56,8 @@ func filterRecordNotFound(err error) (bool, error) {
 
 func filterForeignKeyError(err error) (bool, error) {
 	return strings.Contains(strings.ToLower(err.Error()), "foreign key constraint"), ErrForeignKeyType
+}
+
+func filterRecordNotFoundType(err error) (bool, error) {
+	return strings.Contains(strings.ToLower(err.Error()), "record not found"), ErrRecordNotFoundType
 }

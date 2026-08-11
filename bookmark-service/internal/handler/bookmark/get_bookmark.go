@@ -35,7 +35,6 @@ type getBookmarksRequest struct {
 func (h *bookmarkHandler) GetBookmarks(c *gin.Context) {
 	request, uid, err := requestutils.BindInputFromRequestWithAuth[getBookmarksRequest](c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.InputErrResponse)
 		return
 	}
 
@@ -45,7 +44,7 @@ func (h *bookmarkHandler) GetBookmarks(c *gin.Context) {
 		break
 	default:
 		log.Error().Err(err).Str("operation", "GetBookmarks").Msg("service return error when get bookmarks")
-		c.JSON(http.StatusInternalServerError, response.InstanseErrResponse)
+		c.JSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
 

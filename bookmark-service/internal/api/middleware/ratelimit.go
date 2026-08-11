@@ -24,9 +24,9 @@ func NewRateLimit(repository ratelimit.Repository) RateLimit {
 }
 
 const (
-	rateLimitInterval  = 1 * time.Minute // sliding window ton tai trong bao lau, moi mot phut check bao nhieu request
-	rateLimitCount     = 10              // so max request thuc hien trong 1 phut
-	rateLimitKeyFormat = "rate_limit:%s"
+	RateLimitInterval  = 1 * time.Minute // sliding window ton tai trong bao lau, moi mot phut check bao nhieu request
+	RateLimitCount     = 10              // so max request thuc hien trong 1 phut
+	RateLimitKeyFormat = "rate_limit:%s"
 )
 
 func (r *rateLimit) RateLimit() gin.HandlerFunc {
@@ -38,7 +38,7 @@ func (r *rateLimit) RateLimit() gin.HandlerFunc {
 		}
 
 		// create rate limit key
-		rateLimitKey := fmt.Sprintf(rateLimitKeyFormat, uid)
+		rateLimitKey := fmt.Sprintf(RateLimitKeyFormat, uid)
 
 		// get current rate limit
 		currentRate, err := r.repository.GetCurrentRateLimit(c, rateLimitKey)
@@ -47,13 +47,15 @@ func (r *rateLimit) RateLimit() gin.HandlerFunc {
 		}
 
 		// check if rate limit exceeded
-		if currentRate >= rateLimitCount {
+		if currentRate >= RateLimitCount {
 			c.JSON(http.StatusTooManyRequests, gin.H{"error": "rate limit exceeded"})
 			return
 		}
 
 		// increase rate limit
-		r.repository.IncreaseRateLimit(c, rateLimitKey, rateLimitInterval)
+		if err := r.repository.IncreaseRateLimit(c, rateLimitKey, RateLimitInterval); err != nil {
+			log.Error().Err(err).Msg("failed to increase rate limit")
+		}
 		c.Next()
 	}
 }
