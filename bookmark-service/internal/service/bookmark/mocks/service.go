@@ -47,12 +47,12 @@ func (_m *Service) CreateBookmark(ctx context.Context, description string, url s
 	return r0, r1
 }
 
-// DeleteBookmark provides a mock function with given fields: ctx, userID, ID
-func (_m *Service) DeleteBookmark(ctx context.Context, userID string, ID string) error {
+// DeleteBookmarkByID provides a mock function with given fields: ctx, userID, ID
+func (_m *Service) DeleteBookmarkByID(ctx context.Context, userID string, ID string) error {
 	ret := _m.Called(ctx, userID, ID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteBookmark")
+		panic("no return value specified for DeleteBookmarkByID")
 	}
 
 	var r0 error
@@ -95,21 +95,21 @@ func (_m *Service) GetBookmarks(ctx context.Context, userID string, page int, li
 	return r0, r1
 }
 
-// UpdateBookmark provides a mock function with given fields: ctx, description, url, userID, ID
-func (_m *Service) UpdateBookmark(ctx context.Context, description string, url string, userID string, ID string) (*model.Bookmark, error) {
-	ret := _m.Called(ctx, description, url, userID, ID)
+// UpdateBookmarkByID provides a mock function with given fields: ctx, description, url, userID, bookmarkID
+func (_m *Service) UpdateBookmarkByID(ctx context.Context, description string, url string, userID string, bookmarkID string) (*model.Bookmark, error) {
+	ret := _m.Called(ctx, description, url, userID, bookmarkID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for UpdateBookmark")
+		panic("no return value specified for UpdateBookmarkByID")
 	}
 
 	var r0 *model.Bookmark
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) (*model.Bookmark, error)); ok {
-		return rf(ctx, description, url, userID, ID)
+		return rf(ctx, description, url, userID, bookmarkID)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) *model.Bookmark); ok {
-		r0 = rf(ctx, description, url, userID, ID)
+		r0 = rf(ctx, description, url, userID, bookmarkID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*model.Bookmark)
@@ -117,7 +117,7 @@ func (_m *Service) UpdateBookmark(ctx context.Context, description string, url s
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string) error); ok {
-		r1 = rf(ctx, description, url, userID, ID)
+		r1 = rf(ctx, description, url, userID, bookmarkID)
 	} else {
 		r1 = ret.Error(1)
 	}

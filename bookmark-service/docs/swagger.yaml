@@ -20,6 +20,13 @@ definitions:
       message:
         type: string
     type: object
+  bookmark.updateBookmarkRequest:
+    properties:
+      description:
+        type: string
+      url:
+        type: string
+    type: object
   handler.shortenInputBody:
     properties:
       exp:
@@ -233,6 +240,65 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new bookmark
+      tags:
+      - Bookmarks
+  /v1/bookmarks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a new bookmark for the authenticated user
+      parameters:
+      - description: Bookmark ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Message'
+      security:
+      - BearerAuth: []
+      summary: Delete a new bookmark
+      tags:
+      - Bookmarks
+    put:
+      consumes:
+      - application/json
+      description: Update a new bookmark for the authenticated user
+      parameters:
+      - description: Bookmark ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Create Bookmark Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/bookmark.updateBookmarkRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Message'
+      security:
+      - BearerAuth: []
+      summary: Update a new bookmark
       tags:
       - Bookmarks
   /v1/bookmarks/import:

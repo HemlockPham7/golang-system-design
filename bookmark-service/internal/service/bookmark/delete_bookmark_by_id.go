@@ -2,6 +2,6 @@ package bookmark
 
 import "context"
 
-func (s *bookmarkService) DeleteBookmark(ctx context.Context, userID, ID string) error {
-	return nil
+func (s *bookmarkService) DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error {
+	return s.repo.DeleteBookmarkByID(ctx, userID, bookmarkID)
 }
