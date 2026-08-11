@@ -14,6 +14,7 @@ type Service interface {
 	CreateUser(ctx context.Context, username, password, displayName, email string) (*model.User, error)
 	Login(ctx context.Context, username, password string) (string, error)
 	GetSelfInfo(ctx context.Context, uid string) (*model.User, error)
+	UpdateUserByID(ctx context.Context, uid, displayName, email string) error
 }
 
 type service struct {

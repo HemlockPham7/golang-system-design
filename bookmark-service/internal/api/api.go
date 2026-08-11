@@ -171,6 +171,11 @@ func (e *engine) initRoutes() {
 				selfRoutes.GET("/info", allHandlers.userHandler.GetSelfInfo)
 			}
 
+			userRoutes := privateV1Routes.Group("/users")
+			{
+				userRoutes.PUT("/update", allHandlers.userHandler.UpdateUserByID)
+			}
+
 			bookmarksRoutes := privateV1Routes.Group("/bookmarks")
 			{
 				bookmarksRoutes.POST("/", allHandlers.bookmarkHandler.CreateBookmark)

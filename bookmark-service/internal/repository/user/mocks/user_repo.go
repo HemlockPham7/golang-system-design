@@ -104,6 +104,24 @@ func (_m *Repository) GetUserByUsername(ctx context.Context, username string) (*
 	return r0, r1
 }
 
+// UpdateUserByID provides a mock function with given fields: ctx, id, updatedUser
+func (_m *Repository) UpdateUserByID(ctx context.Context, id string, updatedUser *model.User) error {
+	ret := _m.Called(ctx, id, updatedUser)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateUserByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, *model.User) error); ok {
+		r0 = rf(ctx, id, updatedUser)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // NewRepository creates a new instance of Repository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewRepository(t interface {
