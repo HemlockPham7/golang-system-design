@@ -31,6 +31,13 @@ func (u *UserCommonTestDB) GenerateData() error {
 			Password:    "janedoe",
 			Email:       "janedoe@gmail.com",
 		},
+		{
+			Base:        GetTestBase("d7c13097-67a7-4eae-a60e-0b9b533b7b10"),
+			DisplayName: "Test User",
+			Username:    "testuser001",
+			Password:    "$2a$10$hhuB9rZrp5ikmRb5yAF9hev6AE2tC404jhtP.bdOjme9lECJClzFu",
+			Email:       "test@gmail.com",
+		},
 	}
 
 	return db.CreateInBatches(users, 10).Error
