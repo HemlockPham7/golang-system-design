@@ -17,5 +17,4 @@ func (s *linkService) GetLinkFromCode(ctx context.Context, code string) (string,
 	default:
 		return "", ErrCodeNotFound
 	}
-
 }

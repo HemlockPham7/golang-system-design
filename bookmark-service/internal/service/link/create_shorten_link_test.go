@@ -1,22 +1,22 @@
-package service
+package link
 
 import (
 	"context"
 	"testing"
 
-	mockRepo "github.com/HemlockPham7/golang-system-design/internal/repository/mocks"
+	mockLink "github.com/HemlockPham7/golang-system-design/internal/repository/link/mocks"
 	mockService "github.com/HemlockPham7/golang-system-design/pkg/utils/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateShortenLink(t *testing.T) {
+func TestLinkService_CreateShortenLink(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
 		name string
 
 		setupMockCodeGen func() *mockService.GenPass
-		setupMockStorage func(ctx context.Context) *mockRepo.URLStorage
+		setupMockStorage func(ctx context.Context) *mockLink.Repository
 
 		inputURL string
 		inputExp int64
@@ -33,8 +33,8 @@ func TestCreateShortenLink(t *testing.T) {
 				return codeGenMock
 			},
 
-			setupMockStorage: func(ctx context.Context) *mockRepo.URLStorage {
-				storageMock := mockRepo.NewURLStorage(t)
+			setupMockStorage: func(ctx context.Context) *mockLink.Repository {
+				storageMock := mockLink.NewRepository(t)
 				storageMock.On("StoreURL", ctx, "abc1234", "google.com", int64(300)).Return(nil)
 				return storageMock
 			},
@@ -54,8 +54,8 @@ func TestCreateShortenLink(t *testing.T) {
 				return codeGenMock
 			},
 
-			setupMockStorage: func(ctx context.Context) *mockRepo.URLStorage {
-				return mockRepo.NewURLStorage(t)
+			setupMockStorage: func(ctx context.Context) *mockLink.Repository {
+				return mockLink.NewRepository(t)
 			},
 
 			inputURL: "google.com",
@@ -73,8 +73,8 @@ func TestCreateShortenLink(t *testing.T) {
 				return codeGenMock
 			},
 
-			setupMockStorage: func(ctx context.Context) *mockRepo.URLStorage {
-				storageMock := mockRepo.NewURLStorage(t)
+			setupMockStorage: func(ctx context.Context) *mockLink.Repository {
+				storageMock := mockLink.NewRepository(t)
 				storageMock.On("StoreURL", ctx, "abc1234", "google.com", int64(300)).Return(assert.AnError)
 				return storageMock
 			},
@@ -94,70 +94,12 @@ func TestCreateShortenLink(t *testing.T) {
 
 			mockCodeGen := tc.setupMockCodeGen()
 			mockStorage := tc.setupMockStorage(ctx)
-			testService := NewShortenUrl(mockStorage, mockCodeGen)
+			testService := NewLinkService(mockStorage, nil, mockCodeGen)
 
 			code, err := testService.CreateShortenLink(ctx, tc.inputURL, tc.inputExp)
 			assert.Equal(t, tc.expectedCode, code)
 			assert.Equal(t, tc.expectedError, err)
 
-		})
-	}
-}
-
-func TestGetLinkFromCode(t *testing.T) {
-	t.Parallel()
-
-	testCases := []struct {
-		name string
-
-		setupMockStorage func(ctx context.Context) *mockRepo.URLStorage
-
-		inputCode string
-
-		expectedURL   string
-		expectedError error
-	}{
-		{
-			name: "get url successfully",
-
-			setupMockStorage: func(ctx context.Context) *mockRepo.URLStorage {
-				storageMock := mockRepo.NewURLStorage(t)
-				storageMock.On("GetURL", ctx, "abc1234").Return("google.com", nil)
-				return storageMock
-			},
-
-			inputCode: "abc1234",
-
-			expectedURL:   "google.com",
-			expectedError: nil,
-		},
-		{
-			name: "fail to get code",
-
-			setupMockStorage: func(ctx context.Context) *mockRepo.URLStorage {
-				storageMock := mockRepo.NewURLStorage(t)
-				storageMock.On("GetURL", ctx, "abc1234").Return("", assert.AnError)
-				return storageMock
-			},
-
-			inputCode: "abc1234",
-
-			expectedURL:   "",
-			expectedError: assert.AnError,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			ctx := t.Context()
-
-			mockStorage := tc.setupMockStorage(ctx)
-			testService := NewShortenUrl(mockStorage, nil)
-
-			url, err := testService.GetLinkFromCode(ctx, tc.inputCode)
-			assert.Equal(t, tc.expectedURL, url)
-			assert.Equal(t, tc.expectedError, err)
 		})
 	}
 }

@@ -18,6 +18,7 @@ var (
 	ErrCodeNotFound = errors.New("code not found")
 )
 
+//go:generate mockery --name Service --filename service.go --outpkg mockLink
 type Service interface {
 	CreateShortenLink(ctx context.Context, url string, expSecond int64) (string, error)
 	GetLinkFromCode(ctx context.Context, code string) (string, error)

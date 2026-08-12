@@ -1,4 +1,4 @@
-package integration
+package link
 
 import (
 	"net/http"
@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestShortenUrl_ShortenUrlEndpoint(t *testing.T) {
+func TestLinkEndpoint_CreateShortenUrl(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
