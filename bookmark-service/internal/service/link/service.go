@@ -21,7 +21,7 @@ var (
 //go:generate mockery --name Service --filename service.go --outpkg mockLink
 type Service interface {
 	CreateShortenLink(ctx context.Context, url string, expSecond int64) (string, error)
-	GetLinkFromCode(ctx context.Context, code string) (string, error)
+	GetLinkFromCode(ctx context.Context, requestCode string) (string, error)
 }
 
 type linkService struct {

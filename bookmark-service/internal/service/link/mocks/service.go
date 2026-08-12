@@ -41,9 +41,9 @@ func (_m *Service) CreateShortenLink(ctx context.Context, url string, expSecond 
 	return r0, r1
 }
 
-// GetLinkFromCode provides a mock function with given fields: ctx, code
-func (_m *Service) GetLinkFromCode(ctx context.Context, code string) (string, error) {
-	ret := _m.Called(ctx, code)
+// GetLinkFromCode provides a mock function with given fields: ctx, requestCode
+func (_m *Service) GetLinkFromCode(ctx context.Context, requestCode string) (string, error) {
+	ret := _m.Called(ctx, requestCode)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetLinkFromCode")
@@ -52,16 +52,16 @@ func (_m *Service) GetLinkFromCode(ctx context.Context, code string) (string, er
 	var r0 string
 	var r1 error
 	if rf, ok := ret.Get(0).(func(context.Context, string) (string, error)); ok {
-		return rf(ctx, code)
+		return rf(ctx, requestCode)
 	}
 	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
-		r0 = rf(ctx, code)
+		r0 = rf(ctx, requestCode)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(ctx, code)
+		r1 = rf(ctx, requestCode)
 	} else {
 		r1 = ret.Error(1)
 	}

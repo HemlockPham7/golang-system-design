@@ -4,12 +4,12 @@ import (
 	"context"
 )
 
-func (s *linkService) GetLinkFromCode(ctx context.Context, code string) (string, error) {
+func (s *linkService) GetLinkFromCode(ctx context.Context, requestCode string) (string, error) {
 	switch {
-	case len(code) == codeLength:
-		return s.linkRepository.GetURL(ctx, code)
-	case len(code) == codeLengthBookmark:
-		bookmark, err := s.bookmarkRepository.GetBookmarkByCode(ctx, code)
+	case len(requestCode) == codeLength:
+		return s.linkRepository.GetURL(ctx, requestCode)
+	case len(requestCode) == codeLengthBookmark:
+		bookmark, err := s.bookmarkRepository.GetBookmarkByCode(ctx, requestCode)
 		if err != nil {
 			return "", err
 		}
