@@ -263,8 +263,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.Message"
                         }
@@ -304,8 +304,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.Message"
                         }
@@ -366,7 +366,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.shortenInputBody"
+                            "$ref": "#/definitions/link.shortenInputBody"
                         }
                     }
                 ],
@@ -573,7 +573,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.shortenInputBody": {
+        "link.shortenInputBody": {
             "type": "object",
             "required": [
                 "exp",

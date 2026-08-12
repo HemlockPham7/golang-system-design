@@ -27,7 +27,7 @@ definitions:
       url:
         type: string
     type: object
-  handler.shortenInputBody:
+  link.shortenInputBody:
     properties:
       exp:
         minimum: 60
@@ -256,8 +256,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/response.Message'
         "400":
@@ -288,8 +288,8 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/response.Message'
         "400":
@@ -355,7 +355,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/handler.shortenInputBody'
+          $ref: '#/definitions/link.shortenInputBody'
       produces:
       - application/json
       responses:

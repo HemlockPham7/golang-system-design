@@ -9,15 +9,18 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/api/middleware"
 	"github.com/HemlockPham7/golang-system-design/internal/handler"
 	bookmarkHdl "github.com/HemlockPham7/golang-system-design/internal/handler/bookmark"
+	linkHdl "github.com/HemlockPham7/golang-system-design/internal/handler/link"
 	userHdl "github.com/HemlockPham7/golang-system-design/internal/handler/user"
 	"github.com/HemlockPham7/golang-system-design/internal/repository"
 	bookmarkRepo "github.com/HemlockPham7/golang-system-design/internal/repository/bookmark"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/cache"
+	linkRepo "github.com/HemlockPham7/golang-system-design/internal/repository/link"
 	mqRepo "github.com/HemlockPham7/golang-system-design/internal/repository/queue"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/ratelimit"
 	userRepo "github.com/HemlockPham7/golang-system-design/internal/repository/user"
 	"github.com/HemlockPham7/golang-system-design/internal/service"
 	bookmarkSvc "github.com/HemlockPham7/golang-system-design/internal/service/bookmark"
+	linkSvc "github.com/HemlockPham7/golang-system-design/internal/service/link"
 	mqSvc "github.com/HemlockPham7/golang-system-design/internal/service/queue"
 	userSvc "github.com/HemlockPham7/golang-system-design/internal/service/user"
 	"github.com/HemlockPham7/golang-system-design/pkg/jwtutils"
@@ -83,7 +86,7 @@ func (e *engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 type handlers struct {
 	genPassHandler     handler.GenPass
-	urlHandler         handler.ShortenUrl
+	linkHandler        linkHdl.Handler
 	healthCheckHandler handler.HealthCheck
 	userHandler        userHdl.Handler
 	bookmarkHandler    bookmarkHdl.Handler
@@ -92,10 +95,6 @@ type handlers struct {
 func (e *engine) initHandlers() *handlers {
 	genPassService := utils.NewGenPass()
 	genPassHandler := handler.NewGenPass(genPassService)
-
-	urlStorage := repository.NewUrlStorage(e.redisClient)
-	urlService := service.NewShortenUrl(urlStorage, genPassService)
-	urlHandler := handler.NewShortenUrl(urlService)
 
 	pingRepo := repository.NewPing(e.redisClient)
 	healthCheckService := service.NewHealthCheck(e.cfg.ServiceName, e.cfg.InstanceID, pingRepo)
@@ -118,9 +117,14 @@ func (e *engine) initHandlers() *handlers {
 	bookmarkServiceWithCache := bookmarkSvc.NewBookmarkServiceWithCache(bookmarkService, distributedCache)
 	bookmarkHandler := bookmarkHdl.NewHandler(bookmarkServiceWithCache, mqService)
 
+	// init link Service
+	linkRepository := linkRepo.NewLinkRepository(e.redisClient)
+	linkService := linkSvc.NewLinkService(linkRepository, bookmarkRepository, genPassService)
+	linkHandler := linkHdl.NewLinkHandler(linkService)
+
 	return &handlers{
 		genPassHandler:     genPassHandler,
-		urlHandler:         urlHandler,
+		linkHandler:        linkHandler,
 		healthCheckHandler: healthCheckHandler,
 		userHandler:        userHandler,
 		bookmarkHandler:    bookmarkHandler,
@@ -193,8 +197,8 @@ func (e *engine) initRoutes() {
 		{
 			linksRoutes := publicV1Routes.Group("/links")
 			{
-				linksRoutes.POST("/shorten", allHandlers.urlHandler.ShortenLink)
-				linksRoutes.GET("/redirect/:code", allHandlers.urlHandler.Redirect)
+				linksRoutes.POST("/shorten", allHandlers.linkHandler.ShortenLink)
+				linksRoutes.GET("/redirect/:code", allHandlers.linkHandler.Redirect)
 			}
 
 			usersRoutes := publicV1Routes.Group("/users")

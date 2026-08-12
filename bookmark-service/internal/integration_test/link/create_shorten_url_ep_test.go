@@ -1,4 +1,4 @@
-package integration
+package link
 
 import (
 	"net/http"
@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestShortenUrl_ShortenUrlEndpoint(t *testing.T) {
+func TestLinkEndpoint_CreateShortenUrl(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -60,15 +60,12 @@ func TestShortenUrl_ShortenUrlEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			setupRedisClient := redisPkg.InitMockRedis(t)
-			setupDB := sqldb.InitMockDB(t)
-			testAPI := api.NewEngine(&api.EngineOpts{
+			recorder := tc.setupTestHTTP(api.NewEngine(&api.EngineOpts{
 				App:         gin.Default(),
 				Cfg:         &api.Config{},
-				RedisClient: setupRedisClient,
-				DbClient:    setupDB,
-			})
-			recorder := tc.setupTestHTTP(testAPI)
+				RedisClient: redisPkg.InitMockRedis(t),
+				DbClient:    sqldb.InitMockDB(t),
+			}))
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
 			assert.Contains(t, recorder.Body.String(), tc.expectedResponseBody)
