@@ -32,11 +32,15 @@ func NewEngine(queue queue.Repository, handler Handler) Engine {
 }
 
 const (
-	intervalDelay = 500 * time.Millisecond
+	intervalDelay  = 500 * time.Millisecond
+	numberOfWorker = 4
 )
 
 func (e *engine) Start(ctx context.Context) {
 	log.Info().Msg("Starting worker engine")
+
+	workerPool := newPool(ctx, e.handler, numberOfWorker)
+
 	e.run = true
 	for e.run {
 		// pop message
@@ -53,10 +57,7 @@ func (e *engine) Start(ctx context.Context) {
 		}
 
 		// handle message
-		err = e.handler.Handle(ctx, msg)
-		if err != nil {
-			log.Error().Err(err).Msg("Failed to handle message")
-		}
+		workerPool.Consume(msg)
 	}
 
 }
