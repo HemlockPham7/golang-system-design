@@ -6,8 +6,6 @@ import (
 	"github.com/HemlockPham7/golang-system-design/internal/model"
 )
 
-const codeLength = 8
-
 func (s *bookmarkService) CreateBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error) {
 	// create code
 	code, err := s.codeGen.GeneratePassword(codeLength)

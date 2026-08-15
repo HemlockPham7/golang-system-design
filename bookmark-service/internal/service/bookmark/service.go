@@ -5,8 +5,11 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/model"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/bookmark"
+	"github.com/HemlockPham7/golang-system-design/internal/service/queue"
 	"github.com/HemlockPham7/golang-system-design/pkg/utils"
 )
+
+const codeLength = 8
 
 //go:generate mockery --name Service --filename service.go --outpkg mock_bookmark
 type Service interface {
@@ -14,6 +17,7 @@ type Service interface {
 	UpdateBookmarkByID(ctx context.Context, description, url, userID, bookmarkID string) (*model.Bookmark, error)
 	DeleteBookmarkByID(ctx context.Context, userID, ID string) error
 	GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarksResult, error)
+	CreateBatchBookmarks(ctx context.Context, userId string, bookmarkList []*queue.ImportBookmarkInput) error
 }
 
 type bookmarkService struct {
