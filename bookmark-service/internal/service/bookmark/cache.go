@@ -8,6 +8,7 @@ import (
 
 	"github.com/HemlockPham7/golang-system-design/internal/model"
 	"github.com/HemlockPham7/golang-system-design/internal/repository/cache"
+	"github.com/HemlockPham7/golang-system-design/internal/service/queue"
 	"github.com/rs/zerolog/log"
 )
 
@@ -96,4 +97,13 @@ func (s *bookmarkServiceWithCache) GetBookmarks(ctx context.Context, userID stri
 
 	// return result
 	return result, nil
+}
+
+func (s *bookmarkServiceWithCache) CreateBatchBookmarks(ctx context.Context, userId string, bookmarkList []*queue.ImportBookmarkInput) error {
+	cacheGroupKey := fmt.Sprintf(getBookmarksCacheGroupKeyFormat, userId)
+	err := s.c.DeleteCache(ctx, cacheGroupKey)
+	if err != nil {
+		log.Err(err).Str("key", cacheGroupKey).Msg("Failed to delete cache")
+	}
+	return s.s.CreateBatchBookmarks(ctx, userId, bookmarkList)
 }
